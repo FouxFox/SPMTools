@@ -1,8 +1,8 @@
 # Load localized data
 #Import-LocalizedData LocalizedData -filename PSGet.Resource.psd1
 
-# Dot source the first part of this file from .\private\modulefile\PartOne.ps1
-#. "$PSScriptRoot\private\modulefile\PartOne.ps1"
+# Dot source the first part of this file from .\private\module\PreFunctionLoad.ps1
+. "$PSScriptRoot\private\module\PreFunctionLoad.ps1"
 
 # region Load of module functions after split from main .psm1 file issue Fix#37
 $PublicFunctions = @( Get-ChildItem -Path $PSScriptRoot\public\*.ps1 -Recurse -ErrorAction SilentlyContinue )
@@ -24,6 +24,6 @@ Export-ModuleMember -Function $PublicFunctions.BaseName
 
 #endregion
 
-# now dot source the rest of this file from .\private\Module\SetAliases.ps1 (after the private and public
+# now dot source the rest of this file from .\private\module\PostFunctionLoad.ps1 (after the private and public
 # functions have been dot sourced above.)
-. "$PSScriptRoot\private\Module\SetAliases.ps1"
+. "$PSScriptRoot\private\module\PostFunctionLoad.ps1"

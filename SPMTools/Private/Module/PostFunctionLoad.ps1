@@ -1,3 +1,5 @@
+#Content here runs after all functions are loaded
+
 $Aliases = @{
     'fs' = 'Format-SortedName'
 }
