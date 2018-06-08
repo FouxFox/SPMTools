@@ -1,5 +1,7 @@
 #Content here runs before functions are loaded.
 
+# Dot Soruce Configuration RW functions
+
 $Script:ConfigLocation = "$($env:APPDATA)\.SPMTools\config.json"
 $script:Config = $null
 $FirstRun = $false
@@ -44,7 +46,9 @@ $DefaultConfig = @{
 if (!(Test-Path -Path $Script:ConfigLocation)) {
     #Config file is missing, Write a new one.
     Try {
-        Write-SPMTConfiguration -Configuration $DefaultConfig
+        New-Item -ItemType Directory -Path $Script:ConfigLocation.Replace('\config.json','')
+        $Script:Config = $DefaultConfig
+        Write-SPMTConfiguration
         $FirstRun = $true
     }
     Catch {
@@ -55,7 +59,7 @@ if (!(Test-Path -Path $Script:ConfigLocation)) {
 #Load Config File
 if ((Test-Path -Path $ConfigLocation)) {
     Try {
-        $script:Config = Read-SPMTConfiguration -Path $ConfigLocation 
+        $script:Config = Read-SPMTConfiguration
     }
     Catch {
         Throw $_

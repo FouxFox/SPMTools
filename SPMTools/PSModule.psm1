@@ -2,6 +2,8 @@
 #Import-LocalizedData LocalizedData -filename PSGet.Resource.psd1
 
 # Dot source the first part of this file from .\private\module\PreFunctionLoad.ps1
+. "$PSScriptRoot\private\functions\Read-SPMTConfiguration.ps1"
+. "$PSScriptRoot\private\functions\Write-SPMTConfiguration.ps1"
 . "$PSScriptRoot\private\module\PreFunctionLoad.ps1"
 
 # region Load of module functions after split from main .psm1 file issue Fix#37

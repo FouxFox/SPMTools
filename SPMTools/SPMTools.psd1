@@ -7,7 +7,7 @@
     Copyright = '(c) Matt Small. All rights reserved.'
     Description = 'PowerShell module for Managed Service Providers with commands for simplifying day to day tasks.'
     PowerShellVersion = '3.0'
-    FormatsToProcess = 'PSGet.Format.ps1xml'
+    #FormatsToProcess = ''
     FunctionsToExport = @(
         'Connect-ExchangeOnline'
         'Connect-ExchangeOnPrem'
@@ -16,7 +16,11 @@
         'Connect-SkypeOnPrem'
         'Enable-AzureADMailbox'
         'Format-StoredName'
+        'Get-Company'
         'Get-TranslatedSID'
+        'New-Company'
+        'Remove-Company'
+        'Set-Company'
     )
     VariablesToExport = "*"
     AliasesToExport = @(

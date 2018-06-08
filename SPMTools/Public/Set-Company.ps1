@@ -1,19 +1,5 @@
-#
-.SYNOPSIS
 
-.DESCRIPTION
-
-.PARAMETER
-
-.EXAMPLE
-
-.EXAMPLE
-
-.NOTES
-
-
-#>
-Function New-Company {
+Function Set-Company {
     [cmdletBinding()] 
     Param(
         [Parameter(Mandatory=$true)] 
