@@ -1,4 +1,4 @@
-Function Write-Configuration {
+Function Write-SPMTConfiguration {
     [cmdletBinding()] 
     Param()
 

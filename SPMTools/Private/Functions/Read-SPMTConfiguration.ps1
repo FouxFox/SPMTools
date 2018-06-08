@@ -1,4 +1,4 @@
-Function Read-Configuration {
+Function Read-SPMTConfiguration {
     [cmdletBinding()] 
     Param()
 

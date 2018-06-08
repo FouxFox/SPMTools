@@ -44,7 +44,7 @@ $DefaultConfig = @{
 if (!(Test-Path -Path $Script:ConfigLocation)) {
     #Config file is missing, Write a new one.
     Try {
-        Write-Configuration -Configuration $DefaultConfig
+        Write-SPMTConfiguration -Configuration $DefaultConfig
         $FirstRun = $true
     }
     Catch {
@@ -55,7 +55,7 @@ if (!(Test-Path -Path $Script:ConfigLocation)) {
 #Load Config File
 if ((Test-Path -Path $ConfigLocation)) {
     Try {
-        $script:Config = Read-Configuration -Path $ConfigLocation 
+        $script:Config = Read-SPMTConfiguration -Path $ConfigLocation 
     }
     Catch {
         Throw $_

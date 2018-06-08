@@ -51,7 +51,7 @@ Function New-Company {
             PSDriveLetter = ''
             FQDN = ''
             PreferedDomainController = $false
-            AutoConnect = $false
+            AutoConnect = $true
             CredentialName = $false
         }
     }
