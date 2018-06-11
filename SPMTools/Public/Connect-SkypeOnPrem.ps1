@@ -1,12 +1,6 @@
-function Connect-LyncOnPrem {
+function Connect-SkypeOnPrem {
     [cmdletbinding()]
-    Param(
-        [Parameter(
-        Mandatory=$false,
-        Position=2
-        )]
-        [Switch]$NewCredential
-    )
+    Param()
     DynamicParam {
         $ParameterName = 'Company'
         $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary

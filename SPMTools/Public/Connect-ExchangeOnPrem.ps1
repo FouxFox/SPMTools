@@ -1,17 +1,6 @@
 function Connect-ExchangeOnPrem {
     [cmdletbinding()]
-    Param(
-		[Parameter(
-        Mandatory=$false,
-        Position=2
-        )]
-        [Switch]$UseStoredCredential,
-        [Parameter(
-        Mandatory=$false,
-        Position=3
-        )]
-        [Switch]$NewCredential
-    )
+    Param()
     DynamicParam {
         $ParameterName = 'Company'
         $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary

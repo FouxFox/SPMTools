@@ -1,16 +1,6 @@
 function Connect-SkypeOnline {
 	[cmdletbinding()]
-    Param(
-        [Parameter(
-            Mandatory=$false,
-            Position=2
-        )]
-        [Switch]$NewCredential,
-        [Parameter(
-            Mandatory=$false
-        )]
-        [Switch]$Mfa
-    )
+    Param()
     DynamicParam {
         $ParameterName = 'Company'
         $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
