@@ -8,13 +8,17 @@ function Connect-LyncOnPrem {
         [Switch]$NewCredential
     )
     DynamicParam {
-        $ParameterName = 'OpCo'
+        $ParameterName = 'Company'
         $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
         $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
 
+        $ValidateSet = $Script:Config.Companies.Keys | Where-Object {
+            $Script:Config.Companies.$_.OnPremServices.SkypeUri
+        }
+
         $ParameterAttribute.Mandatory = $true
         $ParameterAttribute.Position = 1
-        $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute([string[]]$OpCo_LyncOnPrem.Keys)
+        $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($ValidateSet)
 
         $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
         $AttributeCollection.Add($ParameterAttribute)
@@ -25,15 +29,22 @@ function Connect-LyncOnPrem {
         return $RuntimeParameterDictionary
 	}	
     Begin {
-		Remove-OldSessions -OnPremHosts $OpCo_LyncOnPrem -OnlineHost $SBOHost
-        $OpCo = $PSBoundParameters.OpCo
-        $ConnectionCredentials = Get-NamedStoredCredential -Target "OPL_$OpCo" -TargetName "OnPrem Lync for $OpCo"
+        $Company = $PSBoundParameters.Company
+        $CompanyObj = $Script:Config.Companies.$Company
 
 	    $Param = @{
-		    ConnectionURI = "https://$($OpCo_LyncOnPrem[$OpCo])/OCSPowerShell"
-		    Credential = $ConnectionCredentials
-	    }
+		    ConnectionURI = $CompanyObj.OnPremServices.SkypeUri
+        }
+        if($CompanyObj.OnPremServices.CredentialName) {
+            $Credential = Get-StoredCredential -Target $CompanyObj.OnPremServices.CredentialName
+            $Param.Add('Credential',$Credential)
+        }
         
-        $null = Import-PSSession (New-PSSession @Param) -AllowClobber -DisableNameChecking
+        $SBOSession = $false
+        $SBOSession = New-PSSession @Param
+
+        if($SBOSession) {
+            $null = Import-PSSession $SBOSession -AllowClobber -DisableNameChecking
+        }
 	}
 }
