@@ -44,7 +44,10 @@
             IsPrerelease = $true
             ReleaseNotes = @'
     ## 0.1
-    * Nothing Yet
+    * First Release
+    * WARNING: NO Testing
+    * WARNING: NO Help
+    * May be buggy, but shouldn't break anything
 '@
         }
     }
