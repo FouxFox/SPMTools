@@ -1,11 +1,17 @@
 
 @{
     RootModule = 'PSModule.psm1'
-    ModuleVersion = '0.1'
+    ModuleVersion = '0.2'
     GUID = 'ea42ab42-d536-4815-bd5e-816844685bf0'
     Author = 'Matt Small'
     Copyright = '(c) Matt Small. All rights reserved.'
-    Description = 'PowerShell module for Managed Service Providers with commands for simplifying day to day tasks.'
+    Description = @'
+The Service Provider Management Tools module provides engineers with the ability to store connection information and use it quickly, eliminating the need to constantly retype passwords or maintain the same password across all companies serviced by the engineer to simplify the logon process.
+
+Also packaged are helper cmdlets such as Format-Sorted to simplify '| sort Name | ft Name' to '| fs' and Get-TranslatedSID for quickly getting the NTAccount from a Security Identifier.
+
+To Get started, add a new Company with New-Company and then set the required information with Set-Company.
+'@
     PowerShellVersion = '3.0'
     #FormatsToProcess = ''
     FunctionsToExport = @(
@@ -14,7 +20,6 @@
         'Connect-SharePointOnline'
         'Connect-SkypeOnline'
         'Connect-SkypeOnPrem'
-        'Enable-AzureADMailbox'
         'Format-Sorted'
         'Get-Company'
         'Get-TranslatedSID'
@@ -43,11 +48,13 @@
             LicenseUri = 'https://github.com/AbelFox/SPMTools/blob/master/LICENSE'
             IsPrerelease = $true
             ReleaseNotes = @'
+    ## 0.2
+    * Added documentation for Get-Help to all cmdlets.
+    * Minor fixes
+    
     ## 0.1
     * First Release
-    * WARNING: NO Testing
-    * WARNING: NO Help
-    * May be buggy, but shouldn't break anything
+    * May be buggy, but shouldn't break anything as all cmdlets only connect to things.
 '@
         }
     }
