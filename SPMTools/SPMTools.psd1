@@ -36,7 +36,7 @@
     PrivateData = @{
         PSData = @{
             Tags = @(
-                'Managed Service Provider'
+                'ManagedServiceProvider'
                 'Windows'
             )
             ProjectUri = 'https://github.com/AbelFox/SPMTools'
