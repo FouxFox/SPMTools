@@ -33,16 +33,6 @@ function Connect-ExchangeOnline {
 
         $EXOSession = $false
         if($CompanyObj.O365.Mfa) {
-			$Param = @{
-		        ConfigurationName = "Microsoft.Exchange"
-		        ConnectionURI = $CompanyObl.O365.ExchangeOnlineURI
-		        Authentication = "Basic"
-		        AllowRedirection = $true
-		        Credential = $ConnectionCredentials
-	        }
-            $EXOSession = New-PSSession @Param
-        }
-        else {
             $LocalPath = $env:LOCALAPPDATA + "\Apps\2.0\"
             $DLLName = 'Microsoft.Exchange.Management.ExoPowershellModule.dll'
             Import-Module $((Get-ChildItem -Path $LocalPath -Filter $DLLName -Recurse).FullName | Where-Object { $_ -notmatch "_none_" } | Select-Object -First 1)
@@ -64,6 +54,16 @@ function Connect-ExchangeOnline {
                     $Tries = 3
                 }
             }
+        }
+        else {
+            $Param = @{
+		        ConfigurationName = "Microsoft.Exchange"
+		        ConnectionURI = $CompanyObj.O365.ExchangeOnlineURI
+		        Authentication = "Basic"
+		        AllowRedirection = $true
+		        Credential = $ConnectionCredentials
+	        }
+            $EXOSession = New-PSSession @Param
         }
         
         if($EXOSession) {

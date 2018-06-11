@@ -13,13 +13,17 @@ function Connect-ExchangeOnPrem {
         [Switch]$NewCredential
     )
     DynamicParam {
-        $ParameterName = 'OpCo'
+        $ParameterName = 'Company'
         $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
         $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
 
+        $ValidateSet = $Script:Config.Companies.Keys | Where-Object {
+            $Script:Config.Companies.$_.O365
+        }
+
         $ParameterAttribute.Mandatory = $true
         $ParameterAttribute.Position = 1
-        $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute([string[]]$OpCo_ExchangeOnPrem.Keys)
+        $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($ValidateSet)
 
         $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
         $AttributeCollection.Add($ParameterAttribute)
@@ -30,20 +34,27 @@ function Connect-ExchangeOnPrem {
         return $RuntimeParameterDictionary
 	}	
     Begin {
-        Remove-OldSessions -OnPremHosts $OpCo_ExchangeOnPrem -OnlineHost $EXOHost
-        $OpCo = $PSBoundParameters.OpCo
+        #Clean conflicting sessions
+        $OldSessions = Get-PSSession | Where-Object { $_.ConfigurationName -eq 'Microsoft.Exchange'}
+        $OldSessions | Remove-PSSession
 
+        $Company = $PSBoundParameters.Company
+        $CompanyObj = $Script:Config.Companies.$Company
+        
 	    $Param = @{
 		    ConfigurationName = "Microsoft.Exchange"
-		    ConnectionURI = "http://$($OpCo_ExchangeOnPrem[$OpCo])/PowerShell/"
+		    ConnectionURI = $CompanyObj.OnPremServices.Exchange.Uri
             Authentication = "Kerberos"
 	    }
-		
-		if($UseStoredCredential) {
-			$ConnectionCredentials = Get-NamedStoredCredential -Target "OPE_$OpCo" -TargetName "OnPrem Exchange for $OpCo"
-			Credential = $ConnectionCredentials
+		if($CompanyObj.OnPremServices.CredentialName) {
+            $Credential = Get-StoredCredential -Target $CompanyObj.OnPremServices.CredentialName
+            $Param.Add('Credential',$Credential)
 		}
 
-	    $null = Import-PSSession (New-PSSession @Param) -AllowClobber -DisableNameChecking
+        $EXOSession = New-PSSession @Param
+
+        if($EXOSession) {
+            $null = Import-PSSession $EXOSession -AllowClobber -DisableNameChecking
+        }
     }
 }
