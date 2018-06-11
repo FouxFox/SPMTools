@@ -29,7 +29,7 @@ function Connect-ExchangeOnline {
 
         $Company = $PSBoundParameters.Company
         $CompanyObj = $Script:Config.Companies.$Company
-        $ConnectionCredentials = Get-StoredCredential -Target $CompanyObj.O365.ExchangeOnlineURI
+        $ConnectionCredentials = Get-StoredCredential -Target $CompanyObj.O365.CredentialName
 
         $EXOSession = $false
         if($CompanyObj.O365.Mfa) {
@@ -60,9 +60,14 @@ function Connect-ExchangeOnline {
                     }
                     $Tries++
                 }
+                Catch {
+                    $Tries = 3
+                }
             }
         }
-
-	    $null = Import-PSSession $EXOSession -AllowClobber -DisableNameChecking
+        
+        if($EXOSession) {
+            $null = Import-PSSession $EXOSession -AllowClobber -DisableNameChecking
+        }
     }
 }

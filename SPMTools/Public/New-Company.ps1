@@ -34,7 +34,7 @@ Function New-Company {
         [Parameter(Mandatory=$false)]
         [switch]$SkypeOnline
     )
-
+    
     #Initial Variable
     $CompanyObj = @{
         Domain = $false
@@ -78,5 +78,5 @@ Function New-Company {
     }
 
     $script:Config.Companies.Add($CompanyName,$CompanyObj)
-    Write-Configuration
+    Write-SPMTConfiguration
 }

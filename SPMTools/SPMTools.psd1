@@ -15,7 +15,7 @@
         'Connect-SkypeOnline'
         'Connect-SkypeOnPrem'
         'Enable-AzureADMailbox'
-        'Format-StoredName'
+        'Format-Sorted'
         'Get-Company'
         'Get-TranslatedSID'
         'New-Company'
@@ -23,9 +23,7 @@
         'Set-Company'
     )
     VariablesToExport = "*"
-    AliasesToExport = @(
-        'fs'
-    )
+    AliasesToExport = "*"
     FileList = @(
         'PSModule.psm1'
     )

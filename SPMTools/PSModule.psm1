@@ -1,14 +1,18 @@
 # Load localized data
 #Import-LocalizedData LocalizedData -filename PSGet.Resource.psd1
 
+# Load Active Directory so we can use the PSProvider later
+$Env:ADPS_LoadDefaultDrive = 0
+if(!(Get-Module).Name.Contains('ActiveDirectory')) {
+    Import-Module -Name ActiveDirectory
+}
+
 # Dot source the first part of this file from .\private\module\PreFunctionLoad.ps1
-. "$PSScriptRoot\private\functions\Read-SPMTConfiguration.ps1"
-. "$PSScriptRoot\private\functions\Write-SPMTConfiguration.ps1"
 . "$PSScriptRoot\private\module\PreFunctionLoad.ps1"
 
 # region Load of module functions after split from main .psm1 file issue Fix#37
 $PublicFunctions = @( Get-ChildItem -Path $PSScriptRoot\public\*.ps1 -Recurse -ErrorAction SilentlyContinue )
-$PrivateFunctions = @( Get-ChildItem -Path $PSScriptRoot\private\functions\*.ps1 -ErrorAction SilentlyContinue )
+$PrivateFunctions = @( Get-ChildItem -Path $PSScriptRoot\Private\Functions\*.ps1 -ErrorAction SilentlyContinue )
 
 # Load the separate function files from the private and public folders.
 $AllFunctions = $PublicFunctions + $PrivateFunctions
@@ -22,7 +26,7 @@ foreach($function in $AllFunctions) {
 }
 
 # Export the public functions
-Export-ModuleMember -Function $PublicFunctions.BaseName
+Export-ModuleMember -Function $PublicFunctions.BaseName -Alias *
 
 #endregion
 

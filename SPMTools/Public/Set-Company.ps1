@@ -69,9 +69,9 @@ Function Set-Company {
 
         [Parameter(
             ParameterSetName='Online',
-            Mandatory=$true
+            Mandatory=$false
         )] 
-        [switch]$OnlineMFA,
+        [switch]$OnlineNoMFA,
 
         [Parameter(
             ParameterSetName='Online',
@@ -172,7 +172,12 @@ Function Set-Company {
 
     ## Office365 Configuration
     if($PSCmdlet.ParameterSetName -eq 'Online') {
-        $CompanyObj.O365.Mfa = $OnlineMFA
+        if($OnlineNoMFA -eq $true) {
+            $CompanyObj.O365.Mfa = $false
+        }
+        else {
+            $CompanyObj.O365.Mfa = $true
+        }
 
         if($OnlineExchangeURI) {
             $CompanyObj.O365.ExchangeOnlineUri = $OnlineExchangeURI
