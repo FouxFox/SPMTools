@@ -5,7 +5,6 @@ Function Set-Company {
         [Parameter(Mandatory=$true)] 
         [string]$Company,
 
-
         # AD Set
 	    [Parameter(
             ParameterSetName='AD',
@@ -95,6 +94,32 @@ Function Set-Company {
         )] 
         [pscredential]$OnlineCredential,
 
+        [Parameter(
+            ParameterSetName='Online',
+            Mandatory=$false
+        )] 
+        [string]$OnlineAzureUsageLocation,
+
+        [Parameter(
+            ParameterSetName='Online',
+            Mandatory=$false
+        )] 
+        [string]$OnlineRemoteRoutingSuffix,
+
+        [Parameter(
+            ParameterSetName='Online',
+            Mandatory=$false
+        )] 
+        [string]$OnlineDirSyncHost,
+
+        [Parameter(
+            ParameterSetName='Online',
+            Mandatory=$false
+        )] 
+        [string]$OnlineDirSyncDC,
+
+
+        # Removal Set
         [Parameter(Mandatory=$false)]
         [Switch]$RemoveADCredential,
 
@@ -199,6 +224,10 @@ Function Set-Company {
                 ExchangeOnlineUri = $false
                 SkypeOnlineUri = $false
                 CredentialName = $false
+                AzureUsageLocation = $false
+                RemoteRoutingSuffix = $false
+                DirSyncHost = $false
+                DirSyncDC = $false
             }
         }
 
@@ -241,6 +270,22 @@ Function Set-Company {
             }
             $null = New-StoredCredential @Param
             $CompanyObj.O365.CredentialName = "O365_$Company"
+        }
+
+        if($OnlineAzureUsageLocation) {
+            $CompanyObj.O365.AzureUsageLocation = $OnlineAzureUsageLocation
+        }
+
+        if($OnlineRemoteRoutingSuffix) {
+            $CompanyObj.O365.RemoteRoutingSuffix = $OnlineRemoteRoutingSuffix
+        }
+
+        if($OnlineDirSyncHost) {
+            $CompanyObj.O365.DirSyncHost = $OnlineDirSyncHost
+        }
+
+        if($OnlineDirSyncDC) {
+            $CompanyObj.O365.DirSyncDC = $OnlineDirSyncDC
         }
     }
 
