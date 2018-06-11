@@ -107,6 +107,7 @@ Set-Company -Company ExampleServices -OnlineCredential example\username -OnlineN
 
 .NOTES
 Company profiles are stored in %APPDATA%\.SPMTools
+Credentials are stored securely in the Windows Credential Vault.
 
 #>
 
