@@ -17,22 +17,7 @@ Function New-Company {
     [cmdletBinding()] 
     Param(
 	    [Parameter(Mandatory=$True)] 
-        [string]$CompanyName,
-
-        [Parameter(Mandatory=$false)]
-        [switch]$ADDS,
-
-        [Parameter(Mandatory=$false)]
-        [switch]$OnPremExchange,
-
-        [Parameter(Mandatory=$false)]
-        [switch]$OnPremSkype,
-
-        [Parameter(Mandatory=$false)]
-        [switch]$ExchangeOnline,
-
-        [Parameter(Mandatory=$false)]
-        [switch]$SkypeOnline
+        [string]$CompanyName
     )
     
     #Initial Variable

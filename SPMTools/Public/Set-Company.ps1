@@ -90,6 +90,12 @@ Function Set-Company {
 
         [Parameter(
             ParameterSetName='Online',
+            Mandatory=$false
+        )] 
+        [string]$OnlineSharePointURI,
+
+        [Parameter(
+            ParameterSetName='Online',
             Mandatory=$true
         )] 
         [pscredential]$OnlineCredential,
