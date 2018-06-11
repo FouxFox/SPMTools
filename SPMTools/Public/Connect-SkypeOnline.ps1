@@ -12,13 +12,17 @@ function Connect-SkypeOnline {
         [Switch]$Mfa
     )
     DynamicParam {
-        $ParameterName = 'Tenant'
+        $ParameterName = 'Company'
         $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
         $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
 
+        $ValidateSet = $Script:Config.Companies.Keys | Where-Object {
+            $Script:Config.Companies.$_.O365
+        }
+
         $ParameterAttribute.Mandatory = $true
         $ParameterAttribute.Position = 1
-        $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($Tenant_LyncOnline)
+        $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($ValidateSet)
 
         $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
         $AttributeCollection.Add($ParameterAttribute)
@@ -29,17 +33,22 @@ function Connect-SkypeOnline {
         return $RuntimeParameterDictionary
 	}	
     Begin {
-        Remove-OldSessions -OnPremHosts $OpCo_LyncOnPrem -OnlineHost $SBOHost
-        $Tenant = $PSBoundParameters.Tenant
-        $ConnectionCredentials = Get-NamedStoredCredential -Target "O365_$Tenant" -TargetName $Tenant
+        #OldSessions stay because all commands prefaced by -CSOnline
 
-        if($Mfa) {
+        $Company = $PSBoundParameters.Company
+        $CompanyObj = $Script:Config.Companies.$Company
+        $ConnectionCredentials = Get-StoredCredential -Target $CompanyObj.O365.CredentialName
+
+        $SBOSession = $false
+        if($CompanyObj.O365.Mfa) {
 		    $SBOSession = New-CsOnlineSession -UserName $ConnectionCredentials.UserName
         }
         else {
             $SBOSession = New-CsOnlineSession -Credential $ConnectionCredentials
         }
 
-	    $null = Import-PSSession $SBOSession -AllowClobber -DisableNameChecking
+        if($SBOSession) {
+            $null = Import-PSSession $SBOSession -AllowClobber -DisableNameChecking
+        }
     }
 }
