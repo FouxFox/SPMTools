@@ -5,6 +5,8 @@ Function Set-Company {
         [Parameter(Mandatory=$true)] 
         [string]$Company,
 
+
+        # AD Set
 	    [Parameter(
             ParameterSetName='AD',
             Mandatory=$true
@@ -36,6 +38,7 @@ Function Set-Company {
         [pscredential]$ADCredential,
 
 
+        # OnPrem Set
         [Parameter(
             ParameterSetName='OnPrem',
             Mandatory=$false
@@ -67,6 +70,7 @@ Function Set-Company {
         [pscredential]$OnPremCredential,
 
 
+        # Online Set
         [Parameter(
             ParameterSetName='Online',
             Mandatory=$false
@@ -209,9 +213,24 @@ Function Set-Company {
         if($OnlineExchangeURI) {
             $CompanyObj.O365.ExchangeOnlineUri = $OnlineExchangeURI
         }
+        else {
+            $CompanyObj.O365.ExchangeOnlineUri = 'https://outlook.office365.com/powershell-liveid'
+        }
 
         if($OnlineSkypeURI) {
             $CompanyObj.O365.SkypeOnlineUri = $OnlineSkypeURI
+        }
+        else {
+            # This default is not used due to New-CSOnlineSession
+            $CompanyObj.O365.SkypeOnlineUri = 'https://online.lync.com'
+        }
+
+        if($OnlineSharePointURI) {
+            $CompanyObj.O365.SharePointOnlineUri = $OnlineSharePointURI
+        }
+        else {
+            # This tells Connect-SharePointOnline to use the logon name instead
+            $CompanyObj.O365.SharePointOnlineUri = $false
         }
 
         if($OnlineCredential) {

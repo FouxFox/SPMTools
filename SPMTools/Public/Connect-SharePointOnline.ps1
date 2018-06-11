@@ -1,24 +1,18 @@
 function Connect-SharepointOnline {
 	[cmdletbinding()]
-    Param(
-        [Parameter(
-            Mandatory=$false,
-            Position=2
-        )]
-        [Switch]$NewCredential,
-        [Parameter(
-            Mandatory=$false
-        )]
-        [Switch]$Mfa
-    )
+    Param()
     DynamicParam {
-        $ParameterName = 'Tenant'
+        $ParameterName = 'Company'
         $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
         $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
 
+        $ValidateSet = $Script:Config.Companies.Keys | Where-Object {
+            $Script:Config.Companies.$_.O365
+        }
+
         $ParameterAttribute.Mandatory = $true
         $ParameterAttribute.Position = 1
-        $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($Tenant_ExchangeOnline)
+        $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($ValidateSet)
 
         $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
         $AttributeCollection.Add($ParameterAttribute)
@@ -29,16 +23,28 @@ function Connect-SharepointOnline {
         return $RuntimeParameterDictionary
 	}	
     Begin {
-        $Tenant = $PSBoundParameters.Tenant
-        $ConnectionCredentials = Get-NamedStoredCredential -Target "O365_$Tenant" -TargetName $Tenant
+        $Company = $PSBoundParameters.Company
+        $CompanyObj = $Script:Config.Companies.$Company
+        $ConnectionCredentials = Get-StoredCredential -Target $CompanyObj.O365.CredentialName
 
-        if($Mfa) {
-		    $SPOSession = Connect-SPOService -Url "https://$Tenant-admin.sharepoint.com"
+        if($CompanyObj.O365.SharePointUri) {
+            $ConnectionURI = $CompanyObj.O365.SharePointUri
         }
         else {
-            $SPOSession = Connect-SPOService -Url "https://$Tenant-admin.sharepoint.com" -Credential $ConnectionCredentials
+            #Grabs the first part of the user's domain and prays
+            $TenantName = $ConnectionCredentials.UserName.Split('@')[1].Split('.')[0]
+            $ConnectionURI = "https://$TenantName-admin.sharepoint.com"
         }
 
-	    $null = Import-PSSession $SPOSession -AllowClobber -DisableNameChecking
+        if($CompanyObj.O365.Mfa) {
+		    $SPOSession = Connect-SPOService -Url $ConnectionURI
+        }
+        else {
+            $SPOSession = Connect-SPOService -Url $ConnectionURI -Credential $ConnectionCredentials
+        }
+
+        if($SPOSession) {
+            $null = Import-PSSession $SPOSession -AllowClobber -DisableNameChecking
+        }
     }
 }
