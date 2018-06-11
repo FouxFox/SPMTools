@@ -1,3 +1,114 @@
+<#
+.SYNOPSIS
+Sets values in a company's profile.
+
+.DESCRIPTION
+The Set-Company cmdlet sets values in a company's profiles. There are three sets of parameters that can be used.
+ - Active Directory Settings
+ - OnPremise Services Settings (Such as Exchange)
+ - Office365 Settings
+
+.PARAMETER Company
+The Company name that was created with New-Company.
+
+.PARAMETER ADDriveName
+The drive letter to use with active directory drives. It is recomended to use between one and
+four characters, but any number of characters can be used.
+
+.PARAMETER ADFQDN
+The full qualified domain name of the Active Directory Domain for this company.
+
+.PARAMETER ADPreferedDomainController
+If specified, SPMTools will use this domain controller for the AD drive.
+If this parameter is not specified, the FQDN will be used.
+
+.PARAMETER ADNoAutoConnect
+By default, AD drives will be loaded when this module is imported. To disable thhis behavior
+for a company, use this switch.
+
+.PARAMETER ADCredential
+A PSCredential Object containing the credentials for this company's AD domain.
+If not spcified, implicit credentials will be used.
+
+.PARAMETER OnPremExchangeHost
+The Exchange server to connect to when using Connect-ExchangeOnPrem.
+It is recomended that this host be one of these in order of most to least preffered:
+ - The Hybrid Exchange Server (in O365 Hybrid Environments)
+ - The Nearest Exchange Server
+ - Any other Exchange Server
+Please use FQDNs when possible.
+
+.PARAMETER OnPremExchangeURI
+In certain circumstances, the Exchange URI may be different than http://Host/Powershell.
+In these circumstances, this parameter can be used to specify a separate URI to use when connecting.
+
+.PARAMETER OnPremSkypeHost
+The Skype Host to connect to. 
+In almost all circumstances, this should be the full Qualified Front End Pool name.
+
+.PARAMETER OnPremSkypeURI
+In certain circumstances, the Skype URI may be different than http://Host/OCSPowershell.
+In these circumstances, this parameter can be used to specify a separate URI to use when connecting.
+
+.PARAMETER OnPremCredential
+A PSCredential Object containing the credentials for this company's services.
+If not spcified, implicit credentials will be used.
+
+.PARAMETER OnlineNoMFA
+If specified, Online commands will not use MFA when connecting.
+It is generally recomended to enable MFA for all admin accounts.
+
+.PARAMETER OnlineExchangeURI
+In certain circumstances, the ExchangeOnline URI will be different from the default.
+In these circumstances, this parameter can be used to specify a separate URI to use when connecting.
+
+.PARAMETER OnlineSkypeURI
+In certain circumstances, the SkypeOnline URI will be different from the default.
+In these circumstances, this parameter can be used to specify a separate URI to use when connecting.
+
+.PARAMETER OnlineSharePointURI
+The SharePointOnline cmdlet uses a best effort approach to guess the tenant URL. If this fails,
+use this parameter to specify the URL. It should look like:
+https://{Tenant}-admin.sharepoint.com
+
+.PARAMETER OnlineCredential
+A PSCredential Object containing the credentials for this company's online services.
+If not spcified, implicit credentials will be used.
+This is required even when using MFA, as it will prefill the prompt
+
+.PARAMETER RemoveADCredential
+Specify this switch with -Company to remove AD credentials from the specified company.
+
+.PARAMETER RemoveOnPremCredential
+Specify this switch with -Company to remove OnPremise services credentials from the specified company.
+
+.PARAMETER RemoveOnlineCredential
+Specify this switch with -Company to remove Office365 credentials from the specified company.
+
+.EXAMPLE
+Set OnPremise settings for ExampleServices.
+
+Set-Company -Company ExampleServices -ADDriveName ES -ADFQDN example.com -ADCredential example\username
+
+.EXAMPLE
+Set Exchange settings for ExampleServices.
+
+Set-Company -Company ExampleServices -OnPremExchangeHost mail.example.com -OnPremCredential example\username
+
+.EXAMPLE
+Set Office365 settings for ExampleServices.
+
+Set-Company -Company ExampleServices -OnlineCredential example\username
+
+.EXAMPLE
+Set cmdlets to connect without MFA
+
+Set-Company -Company ExampleServices -OnlineCredential example\username -OnlineNoMFA
+
+.NOTES
+Company profiles are stored in %APPDATA%\.SPMTools
+
+#>
 
 Function Set-Company {
     [cmdletBinding()] 
