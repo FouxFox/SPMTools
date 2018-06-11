@@ -39,42 +39,11 @@ Function New-Company {
     $CompanyObj = @{
         Domain = $false
         OnPremServices = @{
-            Exchange = $false
-            Skype = $false
+            ExchangeUri = $false
+            SkypeUri = $false
             CredentialName = $false
         }
         O365 = $false
-    }
-
-    if($ADDS) {
-        $CompanyObj.Domain = @{
-            PSDriveLetter = ''
-            FQDN = ''
-            PreferedDomainController = $false
-            AutoConnect = $true
-            CredentialName = $false
-        }
-    }
-
-    if($OnPremExchange) {
-        $CompanyObj.OnPremServices.Exchange = @{
-            Uri = ''
-        }
-    }
-
-    if($OnPremSkype) {
-        $CompanyObj.OnPremServices.Skype = @{
-            Uri = ''
-        }
-    }
-
-    if($ExchangeOnline -or $SkypeOnline) {
-        $CompanyObj.O365 = @{
-            Mfa = $false
-            ExchangeOnlineUri = $false
-            SkypeOnlineUri = $false
-            CredentialName = $false
-        }
     }
 
     $script:Config.Companies.Add($CompanyName,$CompanyObj)

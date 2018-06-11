@@ -18,7 +18,7 @@ function Connect-ExchangeOnPrem {
         $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
 
         $ValidateSet = $Script:Config.Companies.Keys | Where-Object {
-            $Script:Config.Companies.$_.O365
+            $Script:Config.Companies.$_.OnPremServices.ExchangeUri
         }
 
         $ParameterAttribute.Mandatory = $true

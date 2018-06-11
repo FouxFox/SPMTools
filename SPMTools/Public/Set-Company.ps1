@@ -109,6 +109,18 @@ Function Set-Company {
 
     ## AD Settings
     if($PSCmdlet.ParameterSetName -eq 'AD') {
+        # Inital Settings
+        if(!$CompanyObj.Domain) {
+            $CompanyObj.Domain = @{
+                PSDriveLetter = ''
+                FQDN = ''
+                PreferedDomainController = $false
+                AutoConnect = $true
+                CredentialName = $false
+            }
+        }
+
+        # Addition of Paramaters
         if($ADDriveName) {
             $CompanyObj.Domain.PSDriveLetter = $ADDriveName
         }
@@ -141,22 +153,26 @@ Function Set-Company {
 
     ## On-Prem Services Settings
     if($PSCmdlet.ParameterSetName -eq 'OnPrem') {
+        # OnPrem does not have inital settings as these are set
+        # by New-Company
+
+        # Addition of Paramaters
         if($OnPremExchangeHost) {
             $Uri = "http://$OnPremExchangeHost/PowerShell/"
-            $CompanyObj.OnPremServices.Exchange.URI = $Uri
+            $CompanyObj.OnPremServices.ExchangeURI = $Uri
         }
 
         if($OnPremExchangeURI) {
-            $CompanyObj.OnPremServices.Exchange.URI = $OnPremExchangeURI
+            $CompanyObj.OnPremServices.ExchangeURI = $OnPremExchangeURI
         }
 
         if($OnPremSkypeHost) {
             $Uri = "http://$OnPremSkypeHost/PowerShell/"
-            $CompanyObj.OnPremServices.Skype.URI = $Uri
+            $CompanyObj.OnPremServices.SkypeURI = $Uri
         }
 
         if($OnPremSkypeURI) {
-            $CompanyObj.OnPremServices.Skpye.URI = $OnPremSkypeURI
+            $CompanyObj.OnPremServices.SkpyeURI = $OnPremSkypeURI
         }
 
         if($OnPremCredential) {
@@ -172,6 +188,17 @@ Function Set-Company {
 
     ## Office365 Configuration
     if($PSCmdlet.ParameterSetName -eq 'Online') {
+        # Initial Settings
+        if(!$CompanyObj.O365) {
+            $CompanyObj.O365 = @{
+                Mfa = $false
+                ExchangeOnlineUri = $false
+                SkypeOnlineUri = $false
+                CredentialName = $false
+            }
+        }
+
+        # Addition of Paramaters
         if($OnlineNoMFA -eq $true) {
             $CompanyObj.O365.Mfa = $false
         }
