@@ -51,6 +51,7 @@ function Connect-ExchangeOnPrem {
             $Param.Add('Credential',$Credential)
 		}
 
+        $EXOSession = $false
         $EXOSession = New-PSSession @Param
 
         if($EXOSession) {

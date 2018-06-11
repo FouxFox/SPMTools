@@ -36,6 +36,7 @@ function Connect-SharepointOnline {
             $ConnectionURI = "https://$TenantName-admin.sharepoint.com"
         }
 
+        $SPOSession = $false
         if($CompanyObj.O365.Mfa) {
 		    $SPOSession = Connect-SPOService -Url $ConnectionURI
         }
