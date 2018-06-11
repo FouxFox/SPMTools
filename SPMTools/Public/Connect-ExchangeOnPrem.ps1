@@ -1,3 +1,24 @@
+<#
+.SYNOPSIS
+Connects to On-Premise Exchange.
+
+.DESCRIPTION
+Connect-ExchangeOnPrem uses information provided in the profile of the company specified
+to connect to the specifiec company's on-premise exchange server.
+
+.PARAMETER Company
+The company profile to use for connecting.
+This parameter supports Tab-Completion.
+
+.EXAMPLE
+Connect-ExchangeOnPrem -Company ExampleServices
+
+
+.NOTES
+
+
+#>
+
 function Connect-ExchangeOnPrem {
     [cmdletbinding()]
     Param()

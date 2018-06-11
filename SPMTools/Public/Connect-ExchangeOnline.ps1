@@ -1,3 +1,25 @@
+<#
+.SYNOPSIS
+Connects to Office365's Exchange Online service.
+
+.DESCRIPTION
+Connect-ExchangeOnline uses information provided in the profile of the company specified
+to connect to Exchange Online.
+
+.PARAMETER Company
+The company profile to use for connecting.
+This parameter supports Tab-Completion.
+
+.EXAMPLE
+Connect-ExchangeOnline -Company ExampleServices
+
+
+.NOTES
+
+
+#>
+
+
 function Connect-ExchangeOnline {
 	[cmdletbinding()]
     Param()
