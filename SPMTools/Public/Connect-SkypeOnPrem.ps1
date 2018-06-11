@@ -1,3 +1,24 @@
+<#
+.SYNOPSIS
+Connects to On-Premise Skype for Business or Lync.
+
+.DESCRIPTION
+Connect-SkypeOnPrem uses information provided in the profile of the company specified
+to connect to the specifiec company's on-premise skype or exchange server.
+
+.PARAMETER Company
+The company profile to use for connecting.
+This parameter supports Tab-Completion.
+
+.EXAMPLE
+Connect-SkypeOnPrem -Company ExampleServices
+
+
+.NOTES
+
+
+#>
+
 function Connect-SkypeOnPrem {
     [cmdletbinding()]
     Param()

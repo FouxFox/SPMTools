@@ -1,3 +1,24 @@
+<#
+.SYNOPSIS
+Connects to Office365's Skype for Business Online service.
+
+.DESCRIPTION
+Connect-SkypeOnline uses information provided in the profile of the company specified
+to connect to Skype Online.
+
+.PARAMETER Company
+The company profile to use for connecting.
+This parameter supports Tab-Completion.
+
+.EXAMPLE
+Connect-SkypeOnline -Company ExampleServices
+
+
+.NOTES
+
+
+#>
+
 function Connect-SkypeOnline {
 	[cmdletbinding()]
     Param()

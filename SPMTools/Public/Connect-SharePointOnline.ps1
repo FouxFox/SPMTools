@@ -1,3 +1,24 @@
+<#
+.SYNOPSIS
+Connects to Office365's SharePoint Online service.
+
+.DESCRIPTION
+Connect-SharePointOnline uses information provided in the profile of the company specified
+to connect to SharePoint Online.
+
+.PARAMETER Company
+The company profile to use for connecting.
+This parameter supports Tab-Completion.
+
+.EXAMPLE
+Connect-SharePointOnline -Company ExampleServices
+
+
+.NOTES
+
+
+#>
+
 function Connect-SharepointOnline {
 	[cmdletbinding()]
     Param()
