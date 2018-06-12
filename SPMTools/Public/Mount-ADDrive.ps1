@@ -91,7 +91,7 @@ Function Mount-ADDrive {
                 
                 if($DomainObj) {
                     Write-Debug "[Mount-ADDrive] Calling New-ADDrive for $Company"
-                    New-ADDrive $DomainObj
+                    New-ADDrive -Input $DomainObj
                 }
             }
         }
