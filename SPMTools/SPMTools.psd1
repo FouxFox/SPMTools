@@ -38,7 +38,7 @@ To Get started, add a new Company with New-Company and then set the required inf
             ModuleVersion='2.0'
         }
     )
-    ModuleVersion = '0.3.1'
+    ModuleVersion = '0.3.2'
     PrivateData = @{
         PSData = @{
             Tags = @(
@@ -49,6 +49,9 @@ To Get started, add a new Company with New-Company and then set the required inf
             LicenseUri = 'https://github.com/AbelFox/SPMTools/blob/master/LICENSE'
             IsPrerelease = $true
             ReleaseNotes = @'
+    ## 0.3.2
+    * Fixed further erros with Mount-ADDrive and New-ADDrive.
+    
     ## 0.3.1
     * Fixed error in .psd1 that caused Mount-ADDrive not to be exported.
     
