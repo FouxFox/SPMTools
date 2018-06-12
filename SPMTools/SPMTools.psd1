@@ -25,6 +25,7 @@ To Get started, add a new Company with New-Company and then set the required inf
         'New-Company'
         'Remove-Company'
         'Set-Company'
+        'Mount-ADDrive'
     )
     VariablesToExport = "*"
     AliasesToExport = "*"
@@ -37,7 +38,7 @@ To Get started, add a new Company with New-Company and then set the required inf
             ModuleVersion='2.0'
         }
     )
-    ModuleVersion = '0.3.0'
+    ModuleVersion = '0.3.1'
     PrivateData = @{
         PSData = @{
             Tags = @(
@@ -48,6 +49,9 @@ To Get started, add a new Company with New-Company and then set the required inf
             LicenseUri = 'https://github.com/AbelFox/SPMTools/blob/master/LICENSE'
             IsPrerelease = $true
             ReleaseNotes = @'
+    ## 0.3.1
+    * Fixed error in .psd1 that caused Mount-ADDrive not to be exported.
+    
     ## 0.3.0
     * Change AD Drive Autoload behavior to Favorites. See Get-Help Mount-ADDrive for more information.
     * Added Mount-ADDrive to allow mounting of one or more ADDrives.
