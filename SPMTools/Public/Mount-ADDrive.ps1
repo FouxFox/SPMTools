@@ -29,7 +29,7 @@ Mount-ADDrive
 #>
 
 Function Mount-ADDrive {
-    [cmdletBinding()]
+    [cmdletBinding(DefaultParameterSetName='All')]
     Param(
         [Parameter(
             Mandatory=$false,
@@ -59,30 +59,40 @@ Function Mount-ADDrive {
         return $RuntimeParameterDictionary
 	}
     Begin {
-        $CompanyName = $PSBoundParameters.Company
-    
-        if($CompanyName) {
+        Write-Debug "[Mount-ADDrive] Started"
+        if($PSBoundParameters.Company) {
+            Write-Debug "[Mount-ADDrive] Company parameter specified as $($PSBoundParameters.Company)"
+            $CompanyName = $PSBoundParameters.Company
             $CompanyObj = $Script:Config.Companies.$CompanyName
             $DomainObj = $CompanyObj.Domain
             
+            Write-Debug "[Mount-ADDrive] Calling New-ADDrive"
             New-ADDrive $DomainObj
         }
         elseif ($Favorites) {
+            Write-Debug "[Mount-ADDrive] Favorites paramters specified"
             ForEach ($Company in $Script:Config.Companies.Keys) {
+                Write-Debug "[Mount-ADDrive] Checking company $Company"
                 $CompanyObj = $Script:Config.Companies.$Company
                 $DomainObj = $CompanyObj.Domain
                 
-                if($DomainObj.Favorite) {
+                if($DomainObj -and $DomainObj.Favorite) {
+                    Write-Debug "[Mount-ADDrive] Calling New-ADDrive for $Company"
                     New-ADDrive $DomainObj
                 }
             }
         }
         else {
+            Write-Debug "[Mount-ADDrive] no paramter specified"
             ForEach ($Company in $Script:Config.Companies.Keys) {
+                Write-Debug "[Mount-ADDrive] Checking company $Company"
                 $CompanyObj = $Script:Config.Companies.$Company
                 $DomainObj = $CompanyObj.Domain
-
-                New-ADDrive $DomainObj
+                
+                if($DomainObj) {
+                    Write-Debug "[Mount-ADDrive] Calling New-ADDrive for $Company"
+                    New-ADDrive $DomainObj
+                }
             }
         }
     }
