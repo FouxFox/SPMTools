@@ -8,7 +8,7 @@ The Set-Company cmdlet sets values in a company's profiles. There are three sets
  - OnPremise Services Settings (Such as Exchange)
  - Office365 Settings
 
-.PARAMETER Company
+.PARAMETER Name
 The Company name that was created with New-Company.
 
 .PARAMETER ADDriveName
@@ -115,7 +115,7 @@ Function Set-Company {
     [cmdletBinding()] 
     Param(
         [Parameter(Mandatory=$true)] 
-        [string]$Company,
+        [string]$Name,
 
         # AD Set
 	    [Parameter(
@@ -248,11 +248,12 @@ Function Set-Company {
         [switch]$RemoveOnlineCredential
     )
 
-    if(!$script:Config.Companies.ContainsKey($Company)) {
+    if(!$script:Config.Companies.ContainsKey($Name)) {
         Throw "Company not found. Please create one with New-Company"
     }
 
-    $CompanyObj = $Script:Config.Companies.$Company
+    $CompanyName = $Name
+    $CompanyObj = $Script:Config.Companies.$CompanyName
 
     ## AD Settings
     if($PSCmdlet.ParameterSetName -eq 'AD') {
@@ -289,12 +290,12 @@ Function Set-Company {
 
         if($ADCredential) {
             $Param = @{
-                Target = "AD_$Company" 
+                Target = "AD_$CompanyName" 
                 Persist = 'Enterprise' 
                 Credentials = $ADCredential
             }
             $null = New-StoredCredential @Param
-            $CompanyObj.Domain.CredentialName = "AD_$Company"
+            $CompanyObj.Domain.CredentialName = "AD_$CompanyName"
         }
     }
 
@@ -324,12 +325,12 @@ Function Set-Company {
 
         if($OnPremCredential) {
             $Param = @{
-                Target = "OnPrem_$Company" 
+                Target = "OnPrem_$CompanyName" 
                 Persist = 'Enterprise' 
                 Credentials = $OnPremCredential
             }
             $null = New-StoredCredential @Param
-            $CompanyObj.OnPremServices.CredentialName = "OnPrem_$Company"
+            $CompanyObj.OnPremServices.CredentialName = "OnPrem_$CompanyName"
         }
     }
 
@@ -382,12 +383,12 @@ Function Set-Company {
 
         if($OnlineCredential) {
             $Param = @{
-                Target = "O365_$Company" 
+                Target = "O365_$CompanyName" 
                 Persist = 'Enterprise' 
                 Credentials = $OnlineCredential
             }
             $null = New-StoredCredential @Param
-            $CompanyObj.O365.CredentialName = "O365_$Company"
+            $CompanyObj.O365.CredentialName = "O365_$CompanyName"
         }
 
         if($OnlineAzureUsageLocation) {
@@ -409,20 +410,20 @@ Function Set-Company {
 
     ## Credential removal
     if($RemoveADCredential) {
-        Remove-StoredCredential -Target "AD_$Company"
+        Remove-StoredCredential -Target "AD_$CompanyName"
         $CompanyObj.Domain.CredentialName = $false
     }
 
     if($RemoveOnPremCredential) {
-        Remove-StoredCredential -Target "OnPrem_$Company"
+        Remove-StoredCredential -Target "OnPrem_$CompanyName"
         $CompanyObj.OnPremServices.CredentialName = $false
     }
 
     if($RemoveOnlineCredential) {
-        Remove-StoredCredential -Target "O365_$Company"
+        Remove-StoredCredential -Target "O365_$CompanyName"
         $CompanyObj.O365.CredentialName = $false
     }
 
-    $script:Config.Companies.$Company = $CompanyObj
+    $script:Config.Companies.$CompanyName = $CompanyObj
     Write-SPMTConfiguration
 }

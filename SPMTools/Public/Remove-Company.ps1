@@ -6,7 +6,7 @@ Removes a company profile from SPMTools.
 Remove-Company removes the company profile information from disk.
 There is no way to recover this information.
 
-.PARAMETER Company
+.PARAMETER Name
 The name of the company to remove.
 
 .EXAMPLE
@@ -25,7 +25,7 @@ Function Remove-Company {
     [cmdletBinding()]
     Param()
     DynamicParam {
-        $ParameterName = 'Company'
+        $ParameterName = 'Name'
         $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
         $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
 
@@ -42,15 +42,16 @@ Function Remove-Company {
         return $RuntimeParameterDictionary
 	}	
     Begin {
-        if(!$Script:Config.Companes.ContainsKey($PSBoundParameters.Company)) {
-            Throw "Company '$Company' does not exist"
+        $CompanyName = $PSBoundParameters.Name
+        if(!$Script:Config.Companes.ContainsKey($PSBoundParameters.Name)) {
+            Throw "Company '$CompanyName' does not exist"
         }
     }
     Process {
-        Set-Company -Company $Company -RemoveADCredential
-        Set-Company -Company $Company -RemoveOnPremCredential
-        Set-Company -Company $Company -RemoveOnlineCredential
-        $Script:Config.Companies.Remove($Company)
+        Set-Company -Company $CompanyName -RemoveADCredential
+        Set-Company -Company $CompanyName -RemoveOnPremCredential
+        Set-Company -Company $CompanyName -RemoveOnlineCredential
+        $Script:Config.Companies.Remove($CompanyName)
     }
     End {
         Write-SPMTConfiguration
