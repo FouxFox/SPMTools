@@ -1,7 +1,7 @@
 
 @{
     RootModule = 'PSModule.psm1'
-    ModuleVersion = '0.2'
+    ModuleVersion = '0.2.1'
     GUID = 'ea42ab42-d536-4815-bd5e-816844685bf0'
     Author = 'Matt Small'
     Copyright = '(c) Matt Small. All rights reserved.'
