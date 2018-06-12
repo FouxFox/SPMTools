@@ -48,6 +48,9 @@ To Get started, add a new Company with New-Company and then set the required inf
             LicenseUri = 'https://github.com/AbelFox/SPMTools/blob/master/LICENSE'
             IsPrerelease = $true
             ReleaseNotes = @'
+    ## 0.2.1
+    * Changed the -Company parameter to -Name in Set-Company and Remove-Company
+    
     ## 0.2
     * Added documentation for Get-Help to all cmdlets.
     * Minor fixes
