@@ -22,9 +22,10 @@ The full qualified domain name of the Active Directory Domain for this company.
 If specified, SPMTools will use this domain controller for the AD drive.
 If this parameter is not specified, the FQDN will be used.
 
-.PARAMETER ADNoAutoConnect
-By default, AD drives will be loaded when this module is imported. To disable thhis behavior
-for a company, use this switch.
+.PARAMETER ADFavorite
+Favorites allow Mount-ADDrive to only mount the most used AD drives.
+Set this option to mark a Company's AD configuration as a favorite so it can be loaded
+with Mount-ADDrive -Favorites
 
 .PARAMETER ADCredential
 A PSCredential Object containing the credentials for this company's AD domain.
@@ -140,7 +141,7 @@ Function Set-Company {
             ParameterSetName='AD',
             Mandatory=$false
         )] 
-        [switch]$ADNoAutoConnect,
+        [switch]$ADFavorite,
 
         [Parameter(
             ParameterSetName='AD',
@@ -263,7 +264,7 @@ Function Set-Company {
                 PSDriveLetter = ''
                 FQDN = ''
                 PreferedDomainController = $false
-                AutoConnect = $true
+                Favorite = $false
                 CredentialName = $false
             }
         }
@@ -281,8 +282,8 @@ Function Set-Company {
             $CompanyObj.Domain.PreferedDomainController = $ADPreferedDomainController
         }
 
-        if($ADNoAutoConnect) {
-            $CompanyObj.Domain.AutoConnect = $false
+        if($ADFavorite) {
+            $CompanyObj.Domain.Favorite = $true
         }
         else {
             $CompanyObj.Domain.AutoConnect = $true

@@ -1,7 +1,6 @@
 
 @{
     RootModule = 'PSModule.psm1'
-    ModuleVersion = '0.2.1'
     GUID = 'ea42ab42-d536-4815-bd5e-816844685bf0'
     Author = 'Matt Small'
     Copyright = '(c) Matt Small. All rights reserved.'
@@ -38,6 +37,7 @@ To Get started, add a new Company with New-Company and then set the required inf
             ModuleVersion='2.0'
         }
     )
+    ModuleVersion = '0.3.0'
     PrivateData = @{
         PSData = @{
             Tags = @(
@@ -48,8 +48,12 @@ To Get started, add a new Company with New-Company and then set the required inf
             LicenseUri = 'https://github.com/AbelFox/SPMTools/blob/master/LICENSE'
             IsPrerelease = $true
             ReleaseNotes = @'
+    ## 0.3.0
+    * Change AD Drive Autoload behavior to Favorites. See Get-Help Mount-ADDrive for more information.
+    * Added Mount-ADDrive to allow mounting of one or more ADDrives.
+
     ## 0.2.1
-    * Changed the -Company parameter to -Name in Set-Company and Remove-Company
+    * Changed the -Company parameter to -Name in Set-Company and Remove-Company.
     
     ## 0.2
     * Added documentation for Get-Help to all cmdlets.

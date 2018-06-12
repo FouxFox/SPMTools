@@ -64,35 +64,6 @@ if ((Test-Path -Path $ConfigLocation)) {
     }
 }
 
-#Load ADs marked as AutoLoad
-$LoadedDrives = (Get-PSDrive -Scope Global).Name
-ForEach ($Company in $Script:Config.Companies.Keys) {
-    $CompanyObj = $Script:Config.Companies.$Company
-    $DomainObj = $CompanyObj.Domain
-    if($DomainObj.AutoConnect -and !$LoadedDrives.Contains($DomainObj.PSDriveLetter)) {
-        $Param = @{
-            Name = $DomainObj.PSDriveLetter
-            PSProvider = 'ActiveDirectory'
-            Root = ''
-            Scope = 'Global'
-        }
-        
-        if($DomainObj.PreferedDomainController) {
-            $Param.Add('Server',$DomainObj.PreferedDomainController)
-        }
-        else {
-            $Param.Add('Server',$DomainObj.FQDN)
-        }
-
-        if($DomainObj.CredentialName) {
-            $ConnectionCredentials = Get-StoredCredential -Target $DomainObj.CredentialName		
-            $Param.Add("Credential",$ConnectionCredentials)
-        }		
-        
-        New-PSDrive @Param
-    }
-}
-
 
 # Cleanup
 $OnRemoveScript = {}
