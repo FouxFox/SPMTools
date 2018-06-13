@@ -58,7 +58,7 @@ function Connect-ExchangeOnline {
             #Import Module if needed
             $EXOModuleName = 'Microsoft.Exchange.Management.ExoPowershellModule'
             $IsImported = Get-Module -Name $EXOModuleName
-            if($IsImported) {
+            if(!$IsImported) {
                 Import-EXOModule
                 $IsImported = Get-Module -Name $EXOModuleName
                 if(!$IsImported) {

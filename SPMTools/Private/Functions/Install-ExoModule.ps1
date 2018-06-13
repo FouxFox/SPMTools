@@ -54,7 +54,7 @@ function Install-EXOModule {
             #Clean Up
         } finally {
             #get rid of our eventhandlers
-            Get-EventSubscriber | Wher-Object {
+            Get-EventSubscriber | Where-Object {
                 $_.SourceObject.ToString() -eq 'System.Deployment.Application.InPlaceHostingManager'
             } | Unregister-Event
         }
