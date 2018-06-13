@@ -53,7 +53,7 @@ function Connect-ExchangeOnPrem {
         
 	    $Param = @{
 		    ConfigurationName = "Microsoft.Exchange"
-		    ConnectionURI = $CompanyObj.OnPremServices.Exchange.Uri
+		    ConnectionURI = $CompanyObj.OnPremServices.ExchangeUri
             Authentication = "Kerberos"
 	    }
 		if($CompanyObj.OnPremServices.CredentialName) {
