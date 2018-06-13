@@ -410,17 +410,17 @@ Function Set-Company {
     }
 
     ## Credential removal
-    if($RemoveADCredential) {
+    if($RemoveADCredential -and $CompanyObj.Domain) {
         Remove-StoredCredential -Target "AD_$CompanyName"
         $CompanyObj.Domain.CredentialName = $false
     }
 
-    if($RemoveOnPremCredential) {
+    if($RemoveOnPremCredential -and $CompanyObj.OnPremServices.CredentialName) {
         Remove-StoredCredential -Target "OnPrem_$CompanyName"
         $CompanyObj.OnPremServices.CredentialName = $false
     }
 
-    if($RemoveOnlineCredential) {
+    if($RemoveOnlineCredential -and $CompanyObj.O365) {
         Remove-StoredCredential -Target "O365_$CompanyName"
         $CompanyObj.O365.CredentialName = $false
     }

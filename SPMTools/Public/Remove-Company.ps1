@@ -43,7 +43,7 @@ Function Remove-Company {
 	}	
     Begin {
         $CompanyName = $PSBoundParameters.Name
-        if(!$Script:Config.Companes.ContainsKey($PSBoundParameters.Name)) {
+        if(!$Script:Config.Companies.ContainsKey($PSBoundParameters.Name)) {
             Throw "Company '$CompanyName' does not exist"
         }
     }
