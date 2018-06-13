@@ -38,7 +38,7 @@ To Get started, add a new Company with New-Company and then set the required inf
             ModuleVersion='2.0'
         }
     )
-    ModuleVersion = '0.3.2'
+    ModuleVersion = '0.4.0'
     PrivateData = @{
         PSData = @{
             Tags = @(
