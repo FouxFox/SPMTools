@@ -55,10 +55,17 @@ function Connect-ExchangeOnline {
 
         $EXOSession = $false
         if($CompanyObj.O365.Mfa) {
-            $LocalPath = $env:LOCALAPPDATA + "\Apps\2.0\"
-            $DLLName = 'Microsoft.Exchange.Management.ExoPowershellModule.dll'
-            Import-Module $((Get-ChildItem -Path $LocalPath -Filter $DLLName -Recurse).FullName | Where-Object { $_ -notmatch "_none_" } | Select-Object -First 1)
-
+            #Import Module if needed
+            $EXOModuleName = 'Microsoft.Exchange.Management.ExoPowershellModule'
+            $IsImported = Get-Module -Name $EXOModuleName
+            if($IsImported) {
+                Import-EXOModule
+                $IsImported = Get-Module -Name $EXOModuleName
+                if(!$IsImported) {
+                    Write-Error "Exchange MFA Module could not be imported."
+                }
+            }
+            
             $Tries = 0
             While (!$EXOSession -and $Tries -lt 3) {
                 Try {
