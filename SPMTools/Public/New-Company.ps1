@@ -6,7 +6,7 @@ Creates a company profile in the SPMTools module
 The New-Company cmdlet creates a new company profile in Service Provider Management Tools that can then 
 be populated with with information using Set-Company.
 
-.PARAMETER CompanyName
+.PARAMETER Name
 The name of the company. This will be used in may cmdlets throughout SPMTools. It is recommended
 that the comapny name contain no spaces and be short but descriptive.
 
@@ -22,7 +22,7 @@ Function New-Company {
     [cmdletBinding()] 
     Param(
 	    [Parameter(Mandatory=$True)] 
-        [string]$CompanyName
+        [string]$Name
     )
     
     #Initial Variable
@@ -36,6 +36,6 @@ Function New-Company {
         O365 = $false
     }
 
-    $script:Config.Companies.Add($CompanyName,$CompanyObj)
+    $script:Config.Companies.Add($Name,$CompanyObj)
     Write-SPMTConfiguration
 }
