@@ -48,9 +48,9 @@ Function Remove-Company {
         }
     }
     Process {
-        Set-Company -Company $CompanyName -RemoveADCredential
-        Set-Company -Company $CompanyName -RemoveOnPremCredential
-        Set-Company -Company $CompanyName -RemoveOnlineCredential
+        Set-Company -Name $CompanyName -RemoveADCredential
+        Set-Company -Name $CompanyName -RemoveOnPremCredential
+        Set-Company -Name $CompanyName -RemoveOnlineCredential
         $Script:Config.Companies.Remove($CompanyName)
     }
     End {
