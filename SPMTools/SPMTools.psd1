@@ -49,6 +49,11 @@ To Get started, add a new Company with New-Company and then set the required inf
             LicenseUri = 'https://github.com/AbelFox/SPMTools/blob/master/LICENSE'
             IsPrerelease = $true
             ReleaseNotes = @'
+    ## 0.4.0
+    * Added the ability for module to get the Exchange PowerShell Online MFA Module programatically
+    * Fixes to how Remove-Company works
+    * Fixed error causing Connect-ExchangeOnPrem to fail.
+
     ## 0.3.2
     * Fixed further erros with Mount-ADDrive and New-ADDrive.
     
