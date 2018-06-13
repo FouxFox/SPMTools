@@ -1,22 +1,26 @@
-
-
+#Testing Variables
 $Script:FunctionToTest = 'Read-SPMTConfiguration'
 $Script:Dependencies = @(
     'ConvertTo-HashTable'
 )
-$Script:FunctionLocation = GetFunctionLocation $Script:FunctionToTest
 
+#Inital Setup
+Remove-Module InitTests -ErrorAction SilentlyContinue
+Import-Module $PSScriptRoot\InitTests.psm1
+$Script:FunctionLocation = GetFunctionLocation $Script:FunctionToTest
+ForEach ($function in $Script:Dependencies) {
+    . (GetFunctionLocation $function)
+}
+. $Script:FunctionLocation
+
+#Functions
 Function SuiteSetup {
-    Import-Module $PSScriptRoot\InitTests.psm1
+    
     #Set Variables
     $Script:ConfigLocation = "ConfigLocation"
     $Script:Config = $null
 
     TurnOffAutoLoading
-    ForEach ($function in $Script:Dependencies) {
-        . (GetFunctionLocation $function)
-    }
-    . $Script:FunctionLocation
 }
 
 Function SuiteCleanup {
@@ -24,6 +28,8 @@ Function SuiteCleanup {
     Remove-Variable $Script:FunctionToTest -ErrorAction SilentlyContinue
 }
 
+
+#Tests
 Describe SPMTools.Private.Read-SPMTConfiguration {
     BeforeAll {
         SuiteSetup
@@ -36,7 +42,7 @@ Describe SPMTools.Private.Read-SPMTConfiguration {
     <#
     Purpose:         Converts the Configuration from JSON to a HashTable
     Action:          Read-SPMTConfiguration
-    Expected Result: The default Configu
+    Expected Result: ConvertTo-HashTable is loaded into $Script:Config
     #>
 
     Context 'Read Default Configuration' {
