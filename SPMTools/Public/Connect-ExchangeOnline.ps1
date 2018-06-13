@@ -80,6 +80,12 @@ function Connect-ExchangeOnline {
                     $Tries++
                 }
                 Catch {
+                    if($_.Exception.Message.Contains('authentication_canceled')) {
+                        Write-Warning "User cancelled authentication."
+                    }
+                    else {
+                        Throw $_
+                    }
                     $Tries = 3
                 }
             }
