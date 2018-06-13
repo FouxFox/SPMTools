@@ -62,7 +62,7 @@ function Connect-ExchangeOnline {
                 Import-EXOModule
                 $IsImported = Get-Module -Name $EXOModuleName
                 if(!$IsImported) {
-                    Write-Error "Exchange MFA Module could not be imported."
+                    Throw "Exchange MFA Module could not be imported."
                 }
             }
             
