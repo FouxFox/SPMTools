@@ -13,6 +13,9 @@ If not specified, all applicable companies will be mounted
 .PARAMETER Favorites
 Mounts companies that are marked as favorites in their configuration
 
+.PARAMETER RunAtStartup
+If specified, Mount-ADDrive will append 
+
 .EXAMPLE
 Mount the EX drive for Example Services, LLC
 
@@ -33,8 +36,13 @@ Function Mount-ADDrive {
     Param(
         [Parameter(
             Mandatory=$false,
-            ParameterSetName = 'Favorites')]
-        [switch]$Favorites
+            ParameterSetName='Favorites'
+        )]
+        [switch]$Favorites,
+
+        [Parameter(Mandatory=$false)]
+        [switch]$RunAtStartup
+
     )
     DynamicParam {
         $ParameterName = 'Company'
@@ -60,49 +68,74 @@ Function Mount-ADDrive {
 	}
     Begin {
         Write-Debug "[Mount-ADDrive] Started"
-        $DriveInformation = @()
 
-        if($PSBoundParameters.Company) {
-            Write-Debug "[Mount-ADDrive] Company parameter specified as $($PSBoundParameters.Company)"
-            $CompanyName = $PSBoundParameters.Company
-            $CompanyObj = $Script:Config.Companies.$CompanyName
-            $DomainObj = $CompanyObj.Domain
+        if($RunAtStartup) {
+            if($PSCmdlet.ParameterSetName -eq 'All') {
+                $CMD = 'Mount-ADDrive'
+            }
+            elseif ($PSCmdlet.ParameterSetName -eq 'Favorites') {
+                $CMD = 'Mount-ADDrive -Favorites'
+            }
+            else {
+                $CMD = "Mount-ADDrive -Company $Company"
+            }
+
+            $SCCaption = "Profile Modification"
+            $RunAtStartupMessage = "This will add '{0}' to your PowerShell Profile. If you need to change this setting in the future, you will need to remove this line from your profile. Are you sure you want to do this?"
+
+            $SCMessage = $RunAtStartupMessage -f $CMD
             
-            Write-Debug "[Mount-ADDrive] Calling New-ADDrive"
-            $DriveInformation += New-ADDrive $DomainObj
-        }
-        elseif ($Favorites) {
-            Write-Debug "[Mount-ADDrive] Favorites paramters specified"
-            ForEach ($Company in $Script:Config.Companies.Keys) {
-                Write-Debug "[Mount-ADDrive] Checking company $Company"
-                $CompanyObj = $Script:Config.Companies.$Company
-                $DomainObj = $CompanyObj.Domain
-                
-                if($DomainObj -and $DomainObj.Favorite) {
-                    Write-Debug "[Mount-ADDrive] Calling New-ADDrive for $Company"
-                    $DriveInformation += New-ADDrive $DomainObj
-                }
+            $Answer = $PSCmdlet.ShouldContinue($SCMessage,$SCCaption,$true,[ref]$false,[ref]$false)
+
+            if($Answer) {
+                $CMD | Out-File -FilePath $profile -Append
             }
         }
         else {
-            Write-Debug "[Mount-ADDrive] no paramter specified"
-            ForEach ($Company in $Script:Config.Companies.Keys) {
-                Write-Debug "[Mount-ADDrive] Checking company $Company"
-                $CompanyObj = $Script:Config.Companies.$Company
+            $DriveInformation = @()
+
+            if($PSBoundParameters.Company) {
+                Write-Debug "[Mount-ADDrive] Company parameter specified as $($PSBoundParameters.Company)"
+                $CompanyName = $PSBoundParameters.Company
+                $CompanyObj = $Script:Config.Companies.$CompanyName
                 $DomainObj = $CompanyObj.Domain
                 
-                if($DomainObj) {
-                    Write-Debug "[Mount-ADDrive] Calling New-ADDrive for $Company"
-                    $DriveInformation += New-ADDrive -Input $DomainObj
+                Write-Debug "[Mount-ADDrive] Calling New-ADDrive"
+                $DriveInformation += New-ADDrive $DomainObj
+            }
+            elseif ($Favorites) {
+                Write-Debug "[Mount-ADDrive] Favorites paramters specified"
+                ForEach ($Company in $Script:Config.Companies.Keys) {
+                    Write-Debug "[Mount-ADDrive] Checking company $Company"
+                    $CompanyObj = $Script:Config.Companies.$Company
+                    $DomainObj = $CompanyObj.Domain
+                    
+                    if($DomainObj -and $DomainObj.Favorite) {
+                        Write-Debug "[Mount-ADDrive] Calling New-ADDrive for $Company"
+                        $DriveInformation += New-ADDrive $DomainObj
+                    }
                 }
             }
-        }
+            else {
+                Write-Debug "[Mount-ADDrive] no paramter specified"
+                ForEach ($Company in $Script:Config.Companies.Keys) {
+                    Write-Debug "[Mount-ADDrive] Checking company $Company"
+                    $CompanyObj = $Script:Config.Companies.$Company
+                    $DomainObj = $CompanyObj.Domain
+                    
+                    if($DomainObj) {
+                        Write-Debug "[Mount-ADDrive] Calling New-ADDrive for $Company"
+                        $DriveInformation += New-ADDrive -Input $DomainObj
+                    }
+                }
+            }
 
-        Write-Debug "[Mount-ADDrive] Printing drive info"
-        #This command can sometimes output both ADDriveInfo Objects AND
-        #ProviderInfo objects. This filter stops that.
-        #It's also nice to show the user what they're connected to.
-        $Filter = { $_.GetType().Name -eq 'ADDriveInfo' }
-        $DriveInformation | Where-Object $Filter | Format-Table -AutoSize Name,Server
+            Write-Debug "[Mount-ADDrive] Printing drive info"
+            #This command can sometimes output both ADDriveInfo Objects AND
+            #ProviderInfo objects. This filter stops that.
+            #It's also nice to show the user what they're connected to.
+            $Filter = { $_.GetType().Name -eq 'ADDriveInfo' }
+            $DriveInformation | Where-Object $Filter | Format-Table -AutoSize Name,Server
+        }
     }
 }

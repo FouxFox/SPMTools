@@ -32,5 +32,5 @@ The Service Provider Management Tools (SPMTools) module provides engineers with 
     - Most `Connect-` commands have a single parameter for `Company`. These commands will also allow that parameter to be tab completed.
     - `Mount-ADDrive` can be used to mount the AD Drives from one or more companies.
 * Mount Drives at startup
-    - Run `'Mount-ADDrive -Favorites' | Out-File -Append -FilePath $PROFILE` to add this command to your PowerShell profile load your favorite drives when you launch PowerShell.
-    - Run `'Mount-ADDrive' | Out-File -Append -FilePath $PROFILE` to add this command to your PowerShell profile load all drives when you launch PowerShell.
+    - Run `Mount-ADDrive -Favorites -RunAtStartup` to add this command to your PowerShell profile load your favorite drives when you launch PowerShell.
+    - Run `Mount-ADDrive -RunAtStartup` to add this command to your PowerShell profile load all drives when you launch PowerShell.

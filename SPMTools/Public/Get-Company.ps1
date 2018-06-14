@@ -109,23 +109,22 @@ Function Get-Company {
 
             #OnPremise Settings
             $OnPremObj = $CompanyObj.OnPremServices
-            if($OnPremObj.ExchangeURI) {
-                $Output.Add('ExchangeURI',$OnPremObj.ExchangeURI)
-            }
-            if($OnPremObj.SkypeURI) {
-                $Output.Add('ExchangeURI',$OnPremObj.SkypeURI)
-            }
             if(
-                $OnPremObj.CredentialName -and
-                (
-                    $OnPremObj.ExchangeURI -or
-                    $OnPremObj.SkypeURI
-                )
+                $OnPremObj.ExchangeURI -or
+                $OnPremObj.SkypeURI
             ) {
-                $Output.Add('OnPremAuthType','Stored')
-            }
-            else {
-                $Output.Add('OnPremAuthType','Integrated')
+                if($OnPremObj.ExchangeURI) {
+                    $Output.Add('ExchangeURI',$OnPremObj.ExchangeURI)
+                }
+                if($OnPremObj.SkypeURI) {
+                    $Output.Add('ExchangeURI',$OnPremObj.SkypeURI)
+                }
+                if($OnPremObj.CredentialName) {
+                    $Output.Add('OnPremAuthType','Stored')
+                }
+                else {
+                    $Output.Add('OnPremAuthType','Integrated')
+                }
             }
 
             #O365 Settings
