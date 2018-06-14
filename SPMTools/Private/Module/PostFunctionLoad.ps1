@@ -12,7 +12,7 @@ $DefaultConfig = @{
                 PSDriveLetter = 'EX'
                 FQDN = 'example.com'
                 PreferedDomainController = $false -or 'DomainController.example.com'
-                AutoConnect = $true -or $false
+                Favorite = $true -or $false
                 CredentialName = 'StoredCredentialName' -or $false
             }
             OnPremServices =  @{

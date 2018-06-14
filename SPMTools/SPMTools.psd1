@@ -38,7 +38,7 @@ To Get started, add a new Company with New-Company and then set the required inf
             ModuleVersion='2.0'
         }
     )
-    ModuleVersion = '0.4.1'
+    ModuleVersion = '0.5.1'
     PrivateData = @{
         PSData = @{
             Tags = @(
@@ -49,6 +49,9 @@ To Get started, add a new Company with New-Company and then set the required inf
             LicenseUri = 'https://github.com/AbelFox/SPMTools/blob/master/LICENSE'
             IsPrerelease = $true
             ReleaseNotes = @'
+    ## 0.5.1
+    * Changed Get-Company to allow user to get the actual configuration data
+    
     ## 0.4.1
     * Added checks to New-ADDrive to make sure the active direcotry PSProvider before trying to use it
     * Changed output of Mount-ADDrive so it prints only Name and Server
