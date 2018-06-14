@@ -38,7 +38,7 @@ To Get started, add a new Company with New-Company and then set the required inf
             ModuleVersion='2.0'
         }
     )
-    ModuleVersion = '0.4.0'
+    ModuleVersion = '0.4.1'
     PrivateData = @{
         PSData = @{
             Tags = @(
@@ -49,6 +49,10 @@ To Get started, add a new Company with New-Company and then set the required inf
             LicenseUri = 'https://github.com/AbelFox/SPMTools/blob/master/LICENSE'
             IsPrerelease = $true
             ReleaseNotes = @'
+    ## 0.4.1
+    * Added checks to New-ADDrive to make sure the active direcotry PSProvider before trying to use it
+    * Changed output of Mount-ADDrive so it prints only Name and Server
+    
     ## 0.4.0
     * Added the ability for module to get the Exchange PowerShell Online MFA Module programatically
     * Fixes to how Remove-Company works
