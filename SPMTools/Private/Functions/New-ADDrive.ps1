@@ -5,6 +5,40 @@ Function New-ADDrive {
 
     Write-Debug "[New-ADDrive] Started"
     $inputObj = $PSBoundParameters.input
+
+    Write-Debug "[New-ADDrive] Checking for ActiveDirectory PSProvider"
+    Try {
+        Get-PSProvider -PSProvider ActiveDirectory -ErrorAction Stop
+        Write-Debug "[New-ADDrive] PSProvider Found"
+    }
+    Catch [ProviderNotFoundException] {
+        Write-Debug "[New-ADDrive] PSProvider Missing"
+        $ADPS_LoadDriveState = $false
+        
+        if(
+            $Env:ADPS_LoadDefaultDrive -eq 1 -or
+            $Env:ADPS_LoadDefaultDrive -eq $null
+        ) {
+            #Save old value if needed.
+            #If the value is not set, the module sets it to '1' on startup
+            Write-Debug "[New-ADDrive] LoadDefaultDrive set to TRUE"
+            $ADPS_LoadDriveState = 1
+            $Env:ADPS_LoadDefaultDrive = 0
+        }
+
+        #The ActiveDirectory PSProvider can go missing after it's imported.
+        #Thus we refrest to be sure 
+        Write-Debug "[New-ADDrive] Removing and re-adding ActiveDirectory"
+        Remove-Module ActiveDirectory -Force -ErrorAction SilentlyContinue
+        Import-Module ActiveDirectory -ErrorAction Stop
+
+        #Reset value back to defaults
+        if(ADPS_LoadDriveState -eq 1) {
+            Write-Debug "[New-ADDrive] Restoring LoadDefaultDrive state"
+            $Env:ADPS_LoadDefaultDrive = $ADPS_LoadDriveState
+        }
+    }
+
     ForEach ($DomainObj in $inputObj) {
         #First let's make sure a drive doesn't exist
         Write-Debug "[New-ADDrive] Checking if $($DomainObj.PSDriveLetter) exists"

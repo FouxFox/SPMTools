@@ -60,6 +60,8 @@ Function Mount-ADDrive {
 	}
     Begin {
         Write-Debug "[Mount-ADDrive] Started"
+        $DriveInformation = @()
+
         if($PSBoundParameters.Company) {
             Write-Debug "[Mount-ADDrive] Company parameter specified as $($PSBoundParameters.Company)"
             $CompanyName = $PSBoundParameters.Company
@@ -67,7 +69,7 @@ Function Mount-ADDrive {
             $DomainObj = $CompanyObj.Domain
             
             Write-Debug "[Mount-ADDrive] Calling New-ADDrive"
-            New-ADDrive $DomainObj
+            $DriveInformation += New-ADDrive $DomainObj
         }
         elseif ($Favorites) {
             Write-Debug "[Mount-ADDrive] Favorites paramters specified"
@@ -78,7 +80,7 @@ Function Mount-ADDrive {
                 
                 if($DomainObj -and $DomainObj.Favorite) {
                     Write-Debug "[Mount-ADDrive] Calling New-ADDrive for $Company"
-                    New-ADDrive $DomainObj
+                    $DriveInformation += New-ADDrive $DomainObj
                 }
             }
         }
@@ -91,9 +93,16 @@ Function Mount-ADDrive {
                 
                 if($DomainObj) {
                     Write-Debug "[Mount-ADDrive] Calling New-ADDrive for $Company"
-                    New-ADDrive -Input $DomainObj
+                    $DriveInformation += New-ADDrive -Input $DomainObj
                 }
             }
         }
+
+        Write-Debug "[Mount-ADDrive] Printing drive info"
+        #This command can sometimes output both ADDriveInfo Objects AND
+        #ProviderInfo objects. This filter stops that.
+        #It's also nice to show the user what they're connected to.
+        $Filter = { $_.GetType().Name -eq 'ADDriveInfo' }
+        $DriveInformation | Where-Object $Filter | Format-Table -AutoSize Name,Server
     }
 }
