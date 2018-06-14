@@ -13,7 +13,7 @@ The Service Provider Management Tools (SPMTools) module provides engineers with 
     - You can open PowerShell as another user by Shift-Right Clicking the icon on the taskbar.
 * Create a new company profile
     ```powershell
-    New-Company -CompanyName ExampleServices
+    New-Company -Name ExampleServices
     ```
 * Configure the company profile
     - Set Domain settings
