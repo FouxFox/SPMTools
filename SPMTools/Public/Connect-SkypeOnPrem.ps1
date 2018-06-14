@@ -59,7 +59,12 @@ function Connect-SkypeOnPrem {
         $SBOSession = New-PSSession @Param
 
         if($SBOSession) {
-            $null = Import-PSSession $SBOSession -AllowClobber -DisableNameChecking
+            $Param = @{
+                Session = $SBOSession
+                AllowClobber = $true
+                DisableNameChecking = $true
+            }
+            $null = Import-Module (Import-PSSession @Param) -Scope Global -DisableNameChecking
         }
 	}
 }

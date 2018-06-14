@@ -102,7 +102,12 @@ function Connect-ExchangeOnline {
         }
         
         if($EXOSession) {
-            $null = Import-PSSession $EXOSession -AllowClobber -DisableNameChecking
+            $Param = @{
+                Session = $EXOSession
+                AllowClobber = $true
+                DisableNameChecking = $true
+            }
+            $null = Import-Module (Import-PSSession @Param) -Scope Global -DisableNameChecking
         }
     }
 }

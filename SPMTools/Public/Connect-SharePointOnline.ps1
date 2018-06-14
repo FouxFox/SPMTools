@@ -66,7 +66,12 @@ function Connect-SharepointOnline {
         }
 
         if($SPOSession) {
-            $null = Import-PSSession $SPOSession -AllowClobber -DisableNameChecking
+            $Param = @{
+                Session = $SPOSession
+                AllowClobber = $true
+                DisableNameChecking = $true
+            }
+            $null = Import-Module (Import-PSSession @Param) -Scope Global -DisableNameChecking
         }
     }
 }
