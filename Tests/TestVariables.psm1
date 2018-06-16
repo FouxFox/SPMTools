@@ -66,7 +66,8 @@ Function RemoveTestVariables {
 	}
 }
 
-function Clone-Object {
+#Pulled from https://stackoverflow.com/questions/7468707/deep-copy-a-dictionary-hashtable-in-powershell
+function Copy-Object {
     param($DeepCopyObject)
     $memStream = new-object IO.MemoryStream
     $formatter = new-object Runtime.Serialization.Formatters.Binary.BinaryFormatter

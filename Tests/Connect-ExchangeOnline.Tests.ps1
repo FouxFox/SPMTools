@@ -36,7 +36,7 @@ Describe SPMTools.Public.Connect-ExchangeOnline {
         #>
         Context 'Without MFA' {
             #Setup Variables
-            $Script:Config = Clone-Object $DefaultConfig
+            $Script:Config = Copy-Object $DefaultConfig
             $CompanyName = $DefaultCompanyName
             $TestCredential = $DefaultTestCredential
 
@@ -131,7 +131,7 @@ Describe SPMTools.Public.Connect-ExchangeOnline {
 
         Context 'With MFA (EXO Module not imported)' {
             #Setup Variables
-            $Script:Config = Clone-Object $DefaultConfig
+            $Script:Config = Copy-Object $DefaultConfig
             $CompanyName = $DefaultCompanyName
             $TestCredential = $DefaultTestCredential
 
@@ -182,7 +182,7 @@ Describe SPMTools.Public.Connect-ExchangeOnline {
 
         Context 'With MFA (EXO Module Imported / Session Rebuild)' {
             #Setup Variables
-            $Script:Config = Clone-Object $DefaultConfig
+            $Script:Config = Copy-Object $DefaultConfig
             $CompanyName = $DefaultCompanyName
             $TestCredential = $DefaultTestCredential
 
@@ -232,7 +232,7 @@ Describe SPMTools.Public.Connect-ExchangeOnline {
 
         Context 'With MFA (Session rebuild fails)' {
             #Setup Variables
-            $Script:Config = Clone-Object $DefaultConfig
+            $Script:Config = Copy-Object $DefaultConfig
             $CompanyName = $DefaultCompanyName
             $TestCredential = $DefaultTestCredential
 
@@ -277,7 +277,7 @@ Describe SPMTools.Public.Connect-ExchangeOnline {
 
         Context 'With MFA (User cancels authentication)' {
             #Setup Variables
-            $Script:Config = Clone-Object $DefaultConfig
+            $Script:Config = Copy-Object $DefaultConfig
             $CompanyName = $DefaultCompanyName
             $TestCredential = $DefaultTestCredential
 
@@ -367,7 +367,7 @@ Describe SPMTools.Public.Connect-ExchangeOnline {
 
         Context "Validate Set Handling (Company doesn't exist)" {
             #Setup Variables
-            $Script:Config = Clone-Object $DefaultConfig
+            $Script:Config = Copy-Object $DefaultConfig
 
             #Tests
             It "Throws a validation set error" {
