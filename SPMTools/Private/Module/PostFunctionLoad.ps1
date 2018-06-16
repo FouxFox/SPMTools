@@ -1,5 +1,5 @@
 #Content here runs after all functions are loaded
-if(!$Env:SPMTTools_TestMode -eq 1) {
+if($Env:SPMTTools_TestMode -eq 1) {
     $Script:ConfigLocation = "$($env:APPDATA)\.SPMTools\config.json"
     $script:Config = $null
     $FirstRun = $false
