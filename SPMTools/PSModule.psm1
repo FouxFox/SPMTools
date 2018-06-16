@@ -4,7 +4,12 @@
 # Load Active Directory so we can use the PSProvider later
 $Env:ADPS_LoadDefaultDrive = 0
 if(!(Get-Module).Name.Contains('ActiveDirectory')) {
-    Import-Module -Name ActiveDirectory
+    Try {
+        Import-Module -Name ActiveDirectory -ErrorAction Stop
+    }
+    Catch {
+        Write-Warning "The ActiveDirectory module failed to load. Some cmdlets may not function correctly."
+    }
 }
 
 # Dot source the first part of this file from .\private\module\PreFunctionLoad.ps1
