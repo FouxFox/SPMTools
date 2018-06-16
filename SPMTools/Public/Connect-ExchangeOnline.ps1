@@ -90,6 +90,7 @@ function Connect-ExchangeOnline {
             While (!$EXOSession -and $Tries -lt 3) {
                 Try {
                     $EXOSession = New-ExoPSSession -UserPrincipalName $ConnectionCredentials.UserName
+                    $Tries++
                 }
                 Catch [System.Management.Automation.Remoting.PSRemotingTransportException] {
                     #Sometimes when a session is broken, the EXOPowerShell Module will throw
@@ -101,6 +102,7 @@ function Connect-ExchangeOnline {
                 }
                 Catch {
                     if($_.Exception.Message.Contains('authentication_canceled')) {
+                        #I don't think we need an error when the user cancels the auth
                         Write-Warning "User cancelled authentication."
                     }
                     else {
@@ -111,6 +113,7 @@ function Connect-ExchangeOnline {
             }
         }
         else {
+            #Build a session without MFA
             $Param = @{
 		        ConfigurationName = "Microsoft.Exchange"
 		        ConnectionURI = $CompanyObj.O365.ExchangeOnlineURI
