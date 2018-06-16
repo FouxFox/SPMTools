@@ -115,9 +115,6 @@ Credentials are stored securely in the Windows Credential Vault.
 Function Set-Company {
     [cmdletBinding()] 
     Param(
-        [Parameter(Mandatory=$true)] 
-        [string]$Name,
-
         # AD Set
 	    [Parameter(
             ParameterSetName='AD',
@@ -248,183 +245,215 @@ Function Set-Company {
         [Parameter(Mandatory=$false)]
         [switch]$RemoveOnlineCredential
     )
+    DynamicParam {
+        $ParameterName = 'Name'
+        $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+        $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
 
-    if(!$script:Config.Companies.ContainsKey($Name)) {
-        Throw "Company not found. Please create one with New-Company"
-    }
+        $ParameterAttribute.Mandatory = $true
+        $ParameterAttribute.Position = 1
+        $ParameterAttribute.ValueFromPipeline = $true
 
-    $CompanyName = $Name
-    $CompanyObj = $Script:Config.Companies.$CompanyName
+        $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+        $AttributeCollection.Add($ParameterAttribute)
 
-    ## AD Settings
-    if($PSCmdlet.ParameterSetName -eq 'AD') {
-        # Inital Settings
-        if(!$CompanyObj.Domain) {
-            $CompanyObj.Domain = @{
-                PSDriveLetter = ''
-                FQDN = ''
-                PreferedDomainController = $false
-                Favorite = $false
-                CredentialName = $false
-            }
+        $ValidateSet = $Script:Config.Companies.Keys
+        if($ValidateSet.length -gt 0) {
+            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($ValidateSet)
+            $AttributeCollection.Add($ValidateSetAttribute)
         }
-
-        # Addition of Paramaters
-        if($ADDriveName) {
-            $CompanyObj.Domain.PSDriveLetter = $ADDriveName
-        }
-
-        if($ADFQDN) {
-            $CompanyObj.Domain.FQDN = $ADFQDN
-        }
-
-        if($ADPreferedDomainController) {
-            $CompanyObj.Domain.PreferedDomainController = $ADPreferedDomainController
-        }
-
-        if($ADFavorite) {
-            $CompanyObj.Domain.Favorite = $true
-        }
-        else {
-            $CompanyObj.Domain.AutoConnect = $true
-        }
-
-        if($ADCredential) {
+ 
+        $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParameterName, [string], $AttributeCollection)
+        $RuntimeParameterDictionary.Add($ParameterName, $RuntimeParameter)
+        return $RuntimeParameterDictionary
+	}
+    Begin {
+        $CompanyName = $PSBoundParameters.Name
+        #Validation Error handling
+        if(!$Script:Config.Companies.ContainsKey($CompanyName)) {
+            $message = "No companies have been set up. Please use the New-Company command to create one."
             $Param = @{
-                Target = "AD_$CompanyName" 
-                Persist = 'Enterprise' 
-                Credentials = $ADCredential
+                ExceptionName = "System.ArgumentException"
+                ExceptionMessage = $message
+                ErrorId = "SetCompanyNoCompaniesAvailable" 
+                CallerPSCmdlet = $PSCmdlet
+                ErrorCategory = 'InvalidArgument'
             }
-            $null = New-StoredCredential @Param
-            $CompanyObj.Domain.CredentialName = "AD_$CompanyName"
-        }
-    }
-
-    ## On-Prem Services Settings
-    if($PSCmdlet.ParameterSetName -eq 'OnPrem') {
-        # OnPrem does not have inital settings as these are set
-        # by New-Company
-
-        # Addition of Paramaters
-        if($OnPremExchangeHost) {
-            $Uri = "http://$OnPremExchangeHost/PowerShell/"
-            $CompanyObj.OnPremServices.ExchangeURI = $Uri
+            ThrowError @Param
         }
 
-        if($OnPremExchangeURI) {
-            $CompanyObj.OnPremServices.ExchangeURI = $OnPremExchangeURI
-        }
+        $CompanyObj = $Script:Config.Companies.$CompanyName
 
-        if($OnPremSkypeHost) {
-            $Uri = "http://$OnPremSkypeHost/PowerShell/"
-            $CompanyObj.OnPremServices.SkypeURI = $Uri
-        }
-
-        if($OnPremSkypeURI) {
-            $CompanyObj.OnPremServices.SkpyeURI = $OnPremSkypeURI
-        }
-
-        if($OnPremCredential) {
-            $Param = @{
-                Target = "OnPrem_$CompanyName" 
-                Persist = 'Enterprise' 
-                Credentials = $OnPremCredential
+        ## AD Settings
+        if($PSCmdlet.ParameterSetName -eq 'AD') {
+            # Inital Settings
+            if(!$CompanyObj.Domain) {
+                $CompanyObj.Domain = @{
+                    PSDriveLetter = ''
+                    FQDN = ''
+                    PreferedDomainController = $false
+                    Favorite = $false
+                    CredentialName = $false
+                }
             }
-            $null = New-StoredCredential @Param
-            $CompanyObj.OnPremServices.CredentialName = "OnPrem_$CompanyName"
-        }
-    }
 
-    ## Office365 Configuration
-    if($PSCmdlet.ParameterSetName -eq 'Online') {
-        # Initial Settings
-        if(!$CompanyObj.O365) {
-            $CompanyObj.O365 = @{
-                Mfa = $false
-                ExchangeOnlineUri = $false
-                SkypeOnlineUri = $false
-                CredentialName = $false
-                AzureUsageLocation = $false
-                RemoteRoutingSuffix = $false
-                DirSyncHost = $false
-                DirSyncDC = $false
+            # Addition of Paramaters
+            if($ADDriveName) {
+                $CompanyObj.Domain.PSDriveLetter = $ADDriveName
+            }
+
+            if($ADFQDN) {
+                $CompanyObj.Domain.FQDN = $ADFQDN
+            }
+
+            if($ADPreferedDomainController) {
+                $CompanyObj.Domain.PreferedDomainController = $ADPreferedDomainController
+            }
+
+            if($ADFavorite) {
+                $CompanyObj.Domain.Favorite = $true
+            }
+            else {
+                $CompanyObj.Domain.AutoConnect = $true
+            }
+
+            if($ADCredential) {
+                $Param = @{
+                    Target = "AD_$CompanyName" 
+                    Persist = 'Enterprise' 
+                    Credentials = $ADCredential
+                }
+                $null = New-StoredCredential @Param
+                $CompanyObj.Domain.CredentialName = "AD_$CompanyName"
             }
         }
 
-        # Addition of Paramaters
-        if($OnlineNoMFA -eq $true) {
-            $CompanyObj.O365.Mfa = $false
-        }
-        else {
-            $CompanyObj.O365.Mfa = $true
-        }
+        ## On-Prem Services Settings
+        if($PSCmdlet.ParameterSetName -eq 'OnPrem') {
+            # OnPrem does not have inital settings as these are set
+            # by New-Company
 
-        if($OnlineExchangeURI) {
-            $CompanyObj.O365.ExchangeOnlineUri = $OnlineExchangeURI
-        }
-        else {
-            $CompanyObj.O365.ExchangeOnlineUri = 'https://outlook.office365.com/powershell-liveid'
-        }
-
-        if($OnlineSkypeURI) {
-            $CompanyObj.O365.SkypeOnlineUri = $OnlineSkypeURI
-        }
-        else {
-            # This default is not used due to New-CSOnlineSession
-            $CompanyObj.O365.SkypeOnlineUri = 'https://online.lync.com'
-        }
-
-        if($OnlineSharePointURI) {
-            $CompanyObj.O365.SharePointOnlineUri = $OnlineSharePointURI
-        }
-        else {
-            # This tells Connect-SharePointOnline to use the logon name instead
-            $CompanyObj.O365.SharePointOnlineUri = $false
-        }
-
-        if($OnlineCredential) {
-            $Param = @{
-                Target = "O365_$CompanyName" 
-                Persist = 'Enterprise' 
-                Credentials = $OnlineCredential
+            # Addition of Paramaters
+            if($OnPremExchangeHost) {
+                $Uri = "http://$OnPremExchangeHost/PowerShell/"
+                $CompanyObj.OnPremServices.ExchangeURI = $Uri
             }
-            $null = New-StoredCredential @Param
-            $CompanyObj.O365.CredentialName = "O365_$CompanyName"
+
+            if($OnPremExchangeURI) {
+                $CompanyObj.OnPremServices.ExchangeURI = $OnPremExchangeURI
+            }
+
+            if($OnPremSkypeHost) {
+                $Uri = "http://$OnPremSkypeHost/PowerShell/"
+                $CompanyObj.OnPremServices.SkypeURI = $Uri
+            }
+
+            if($OnPremSkypeURI) {
+                $CompanyObj.OnPremServices.SkpyeURI = $OnPremSkypeURI
+            }
+
+            if($OnPremCredential) {
+                $Param = @{
+                    Target = "OnPrem_$CompanyName" 
+                    Persist = 'Enterprise' 
+                    Credentials = $OnPremCredential
+                }
+                $null = New-StoredCredential @Param
+                $CompanyObj.OnPremServices.CredentialName = "OnPrem_$CompanyName"
+            }
         }
 
-        if($OnlineAzureUsageLocation) {
-            $CompanyObj.O365.AzureUsageLocation = $OnlineAzureUsageLocation
+        ## Office365 Configuration
+        if($PSCmdlet.ParameterSetName -eq 'Online') {
+            # Initial Settings
+            if(!$CompanyObj.O365) {
+                $CompanyObj.O365 = @{
+                    Mfa = $false
+                    ExchangeOnlineUri = $false
+                    SkypeOnlineUri = $false
+                    CredentialName = $false
+                    AzureUsageLocation = $false
+                    RemoteRoutingSuffix = $false
+                    DirSyncHost = $false
+                    DirSyncDC = $false
+                }
+            }
+
+            # Addition of Paramaters
+            if($OnlineNoMFA -eq $true) {
+                $CompanyObj.O365.Mfa = $false
+            }
+            else {
+                $CompanyObj.O365.Mfa = $true
+            }
+
+            if($OnlineExchangeURI) {
+                $CompanyObj.O365.ExchangeOnlineUri = $OnlineExchangeURI
+            }
+            else {
+                $CompanyObj.O365.ExchangeOnlineUri = 'https://outlook.office365.com/powershell-liveid'
+            }
+
+            if($OnlineSkypeURI) {
+                $CompanyObj.O365.SkypeOnlineUri = $OnlineSkypeURI
+            }
+            else {
+                # This default is not used due to New-CSOnlineSession
+                $CompanyObj.O365.SkypeOnlineUri = 'https://online.lync.com'
+            }
+
+            if($OnlineSharePointURI) {
+                $CompanyObj.O365.SharePointOnlineUri = $OnlineSharePointURI
+            }
+            else {
+                # This tells Connect-SharePointOnline to use the logon name instead
+                $CompanyObj.O365.SharePointOnlineUri = $false
+            }
+
+            if($OnlineCredential) {
+                $Param = @{
+                    Target = "O365_$CompanyName" 
+                    Persist = 'Enterprise' 
+                    Credentials = $OnlineCredential
+                }
+                $null = New-StoredCredential @Param
+                $CompanyObj.O365.CredentialName = "O365_$CompanyName"
+            }
+
+            if($OnlineAzureUsageLocation) {
+                $CompanyObj.O365.AzureUsageLocation = $OnlineAzureUsageLocation
+            }
+
+            if($OnlineRemoteRoutingSuffix) {
+                $CompanyObj.O365.RemoteRoutingSuffix = $OnlineRemoteRoutingSuffix
+            }
+
+            if($OnlineDirSyncHost) {
+                $CompanyObj.O365.DirSyncHost = $OnlineDirSyncHost
+            }
+
+            if($OnlineDirSyncDC) {
+                $CompanyObj.O365.DirSyncDC = $OnlineDirSyncDC
+            }
         }
 
-        if($OnlineRemoteRoutingSuffix) {
-            $CompanyObj.O365.RemoteRoutingSuffix = $OnlineRemoteRoutingSuffix
+        ## Credential removal
+        if($RemoveADCredential -and $CompanyObj.Domain) {
+            Remove-StoredCredential -Target "AD_$CompanyName"
+            $CompanyObj.Domain.CredentialName = $false
         }
 
-        if($OnlineDirSyncHost) {
-            $CompanyObj.O365.DirSyncHost = $OnlineDirSyncHost
+        if($RemoveOnPremCredential -and $CompanyObj.OnPremServices.CredentialName) {
+            Remove-StoredCredential -Target "OnPrem_$CompanyName"
+            $CompanyObj.OnPremServices.CredentialName = $false
         }
 
-        if($OnlineDirSyncDC) {
-            $CompanyObj.O365.DirSyncDC = $OnlineDirSyncDC
+        if($RemoveOnlineCredential -and $CompanyObj.O365) {
+            Remove-StoredCredential -Target "O365_$CompanyName"
+            $CompanyObj.O365.CredentialName = $false
         }
+
+        $script:Config.Companies.$CompanyName = $CompanyObj
+        Write-SPMTConfiguration
     }
-
-    ## Credential removal
-    if($RemoveADCredential -and $CompanyObj.Domain) {
-        Remove-StoredCredential -Target "AD_$CompanyName"
-        $CompanyObj.Domain.CredentialName = $false
-    }
-
-    if($RemoveOnPremCredential -and $CompanyObj.OnPremServices.CredentialName) {
-        Remove-StoredCredential -Target "OnPrem_$CompanyName"
-        $CompanyObj.OnPremServices.CredentialName = $false
-    }
-
-    if($RemoveOnlineCredential -and $CompanyObj.O365) {
-        Remove-StoredCredential -Target "O365_$CompanyName"
-        $CompanyObj.O365.CredentialName = $false
-    }
-
-    $script:Config.Companies.$CompanyName = $CompanyObj
-    Write-SPMTConfiguration
 }

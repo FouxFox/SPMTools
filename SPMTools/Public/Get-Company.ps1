@@ -29,17 +29,19 @@ Function Get-Company {
         $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
         $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
 
-        $ValidateSet = $Script:Config.Companies.Keys 
-
         $ParameterAttribute.Mandatory = $true
         $ParameterAttribute.Position = 1
         $ParameterAttribute.ParameterSetName = 'Specific'
         $ParameterAttribute.ValueFromPipeline = $true
-        $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($ValidateSet)
 
         $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
         $AttributeCollection.Add($ParameterAttribute)
-        $AttributeCollection.Add($ValidateSetAttribute)
+
+        $ValidateSet = $Script:Config.Companies.Keys
+        if($ValidateSet.length -gt 0) {
+            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($ValidateSet)
+            $AttributeCollection.Add($ValidateSetAttribute)
+        }
  
         $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParameterName, [string], $AttributeCollection)
         $RuntimeParameterDictionary.Add($ParameterName, $RuntimeParameter)
@@ -77,8 +79,22 @@ Function Get-Company {
         }
     }
     Process {
+        $Name = $PSBoundParameters.Name
+
+        #Validation Error handling
+        if(!$Script:Config.Companies.ContainsKey($Name)) {
+            $message = "No companies have been set up. Please use the New-Company command to create one."
+            $Param = @{
+                ExceptionName = "System.ArgumentException"
+                ExceptionMessage = $message
+                ErrorId = "GetCompanyNoCompaniesAvailable" 
+                CallerPSCmdlet = $PSCmdlet
+                ErrorCategory = 'InvalidArgument'
+            }
+            ThrowError @Param
+        }
+
         if($PSCmdlet.ParameterSetName -eq 'Specific') {
-            $Name = $PSBoundParameters.Name
             $CompanyObj = $Script:Config.Companies.$Name
             $Output = [ordered]@{
                 Name = $Name

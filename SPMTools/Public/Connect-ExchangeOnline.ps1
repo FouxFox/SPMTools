@@ -47,11 +47,29 @@ function Connect-ExchangeOnline {
         return $RuntimeParameterDictionary
 	}	
     Begin {
+        $Company = $PSBoundParameters.Company
+        
+        #Validation Error handling
+        if(
+            !$Script:Config.Companies.ContainsKey($Company) -or
+            !$Script:Config.Companies.$Company.O365
+        ) {
+            $message = "There is not a company profile available that supports this cmdlet. Please check your configuration and try again."
+            $Param = @{
+                ExceptionName = "System.ArgumentException"
+                ExceptionMessage = $message
+                ErrorId = "ExchangeOnlineNoCompaniesAvailable" 
+                CallerPSCmdlet = $PSCmdlet
+                ErrorCategory = 'InvalidArgument'
+            }
+            ThrowError @Param
+        }
+
         #Clean conflicting sessions
         $OldSessions = Get-PSSession | Where-Object { $_.ConfigurationName -eq 'Microsoft.Exchange'}
         $OldSessions | Remove-PSSession
 
-        $Company = $PSBoundParameters.Company
+        
         $CompanyObj = $Script:Config.Companies.$Company
         $ConnectionCredentials = Get-StoredCredential -Target $CompanyObj.O365.CredentialName
 

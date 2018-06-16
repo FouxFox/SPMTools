@@ -27,17 +27,19 @@ function Connect-SharepointOnline {
         $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
         $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
 
-        $ValidateSet = $Script:Config.Companies.Keys | Where-Object {
-            $Script:Config.Companies.$_.O365
-        }
-
         $ParameterAttribute.Mandatory = $true
         $ParameterAttribute.Position = 1
-        $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($ValidateSet)
 
         $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
         $AttributeCollection.Add($ParameterAttribute)
-        $AttributeCollection.Add($ValidateSetAttribute)
+        
+        $ValidateSet = $Script:Config.Companies.Keys | Where-Object {
+            $Script:Config.Companies.$_.O365
+        }
+        if($ValidateSet.length -gt 0) {
+            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($ValidateSet)
+            $AttributeCollection.Add($ValidateSetAttribute)
+        }
  
         $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParameterName, [string], $AttributeCollection)
         $RuntimeParameterDictionary.Add($ParameterName, $RuntimeParameter)
@@ -45,6 +47,23 @@ function Connect-SharepointOnline {
 	}	
     Begin {
         $Company = $PSBoundParameters.Company
+
+        #Validation Error handling
+        if(
+            !$Script:Config.Companies.ContainsKey($Company) -or
+            !$Script:Config.Companies.$Company.O365
+        ) {
+            $message = "There is not a company profile available that supports this cmdlet. Please check your configuration and try again."
+            $Param = @{
+                ExceptionName = "System.ArgumentException"
+                ExceptionMessage = $message
+                ErrorId = "SharePointOnlineNoCompaniesAvailable" 
+                CallerPSCmdlet = $PSCmdlet
+                ErrorCategory = 'InvalidArgument'
+            }
+            ThrowError @Param
+        }
+
         $CompanyObj = $Script:Config.Companies.$Company
         $ConnectionCredentials = Get-StoredCredential -Target $CompanyObj.O365.CredentialName
 

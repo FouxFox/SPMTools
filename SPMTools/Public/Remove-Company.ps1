@@ -31,11 +31,16 @@ Function Remove-Company {
 
         $ParameterAttribute.Mandatory = $true
         $ParameterAttribute.Position = 1
-        $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($Script:Config.Companies.Keys)
+        $ParameterAttribute.ValueFromPipeline = $true
 
         $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
         $AttributeCollection.Add($ParameterAttribute)
-        $AttributeCollection.Add($ValidateSetAttribute)
+
+        $ValidateSet = $Script:Config.Companies.Keys
+        if($ValidateSet.length -gt 0) {
+            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($ValidateSet)
+            $AttributeCollection.Add($ValidateSetAttribute)
+        }
  
         $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParameterName, [string], $AttributeCollection)
         $RuntimeParameterDictionary.Add($ParameterName, $RuntimeParameter)
@@ -43,8 +48,17 @@ Function Remove-Company {
 	}	
     Begin {
         $CompanyName = $PSBoundParameters.Name
-        if(!$Script:Config.Companies.ContainsKey($PSBoundParameters.Name)) {
-            Throw "Company '$CompanyName' does not exist"
+        #Validation Error handling
+        if(!$Script:Config.Companies.ContainsKey($CompanyName)) {
+            $message = "No companies have been set up. Please use the New-Company command to create one."
+            $Param = @{
+                ExceptionName = "System.ArgumentException"
+                ExceptionMessage = $message
+                ErrorId = "RemoveCompanyNoCompaniesAvailable" 
+                CallerPSCmdlet = $PSCmdlet
+                ErrorCategory = 'InvalidArgument'
+            }
+            ThrowError @Param
         }
     }
     Process {

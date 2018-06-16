@@ -27,28 +27,47 @@ function Connect-ExchangeOnPrem {
         $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
         $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
 
-        $ValidateSet = $Script:Config.Companies.Keys | Where-Object {
-            $Script:Config.Companies.$_.OnPremServices.ExchangeUri
-        }
-
         $ParameterAttribute.Mandatory = $true
         $ParameterAttribute.Position = 1
-        $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($ValidateSet)
 
         $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
         $AttributeCollection.Add($ParameterAttribute)
-        $AttributeCollection.Add($ValidateSetAttribute)
+        
+        $ValidateSet = $Script:Config.Companies.Keys | Where-Object {
+            $Script:Config.Companies.$_.OnPremServices.ExchangeUri
+        }
+        if($ValidateSet.length -gt 0) {
+            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($ValidateSet)
+            $AttributeCollection.Add($ValidateSetAttribute)
+        }
  
         $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParameterName, [string], $AttributeCollection)
         $RuntimeParameterDictionary.Add($ParameterName, $RuntimeParameter)
         return $RuntimeParameterDictionary
 	}	
     Begin {
+        $Company = $PSBoundParameters.Company
+
+        #Validation Error handling
+        if(
+            !$Script:Config.Companies.ContainsKey($Company) -or
+            !$Script:Config.Companies.$Company.OnPremServices.ExchangeUri
+        ) {
+            $message = "There is not a company profile available that supports this cmdlet. Please check your configuration and try again."
+            $Param = @{
+                ExceptionName = "System.ArgumentException"
+                ExceptionMessage = $message
+                ErrorId = "ExchangeOnPremNoCompaniesAvailable" 
+                CallerPSCmdlet = $PSCmdlet
+                ErrorCategory = 'InvalidArgument'
+            }
+            ThrowError @Param
+        }
+
         #Clean conflicting sessions
         $OldSessions = Get-PSSession | Where-Object { $_.ConfigurationName -eq 'Microsoft.Exchange'}
         $OldSessions | Remove-PSSession
 
-        $Company = $PSBoundParameters.Company
         $CompanyObj = $Script:Config.Companies.$Company
         
 	    $Param = @{
