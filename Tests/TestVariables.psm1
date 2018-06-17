@@ -13,7 +13,7 @@ Function InitTestVariables {
 		Name = 'DefaultTestCredential'
 		Option = 'ReadOnly'
 		Scope = 'Global'
-		Value = New-Object System.Management.Automation.PSCredential ("username",$TestPassword)
+		Value = New-Object System.Management.Automation.PSCredential ("u@example.onmicrosoft.com",$TestPassword)
 	}
 	Set-Variable @Param
 
@@ -40,6 +40,7 @@ Function InitTestVariables {
 						Mfa = $true
 						ExchangeOnlineUri = 'https://outlook.office365.com/powershell-liveid/'
 						SkypeOnlineUri = 'https://online.lync.com/OCSPowerShell'
+						SharePointUri = $false
 						CredentialName = "O365_$DefaultCompanyName"
 					}
 				} 
