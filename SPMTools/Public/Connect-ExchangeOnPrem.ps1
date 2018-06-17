@@ -69,7 +69,8 @@ function Connect-ExchangeOnPrem {
         $OldSessions | Remove-PSSession
 
         $CompanyObj = $Script:Config.Companies.$Company
-        
+
+        #Make the connection
 	    $Param = @{
 		    ConfigurationName = "Microsoft.Exchange"
 		    ConnectionURI = $CompanyObj.OnPremServices.ExchangeUri
