@@ -1,43 +1,19 @@
 #Content here runs after all functions are loaded
 if($Env:SPMTools_TestMode -ne 1) {
+    $ModuleVersion = (Get-Module -ListAvailable SPMTools).Version
+    $SchemaVersion = Get-SPMTSchemaVersion -Version $ModuleVersion
     $Script:ConfigLocation = "$($env:APPDATA)\.SPMTools\config.json"
     $script:Config = $null
     $FirstRun = $false
 
     $DefaultConfig = @{
-        Companies = @{
-        <#  
-            Company = @{
-                Domain = @{
-                    PSDriveLetter = 'EX'
-                    FQDN = 'example.com'
-                    PreferedDomainController = $false -or 'DomainController.example.com'
-                    Favorite = $true -or $false
-                    CredentialName = 'StoredCredentialName' -or $false
-                }
-                OnPremServices =  @{
-                    Exchange = @{
-                        Uri = 'http://ExchangeServer.example.com/PowerShell/'
-                    }
-                    Skype = @{
-                        Uri = 'https://SkypeFE.example.com/OCSPowerShell'
-                    }
-                    CredentialName = 'StoredCredentialName' -or $false
-                }
-                O365 = @{
-                    Mfa = $true -or $false
-                    ExchangeOnlineUri = 'https://outlook.office365.com/powershell-liveid/'
-                    SkypeOnlineUri = https://online.lync.com/OCSPowerShell
-                    CredentialName = 'StoredCredentialName'
-                }
-            } 
-        #>
-        }
+        Companies = @{}
         AzureSkuTable = @{
             'E1' = 'STANDARDPACK'
             'E3' = 'ENTERPRISEPACK'
             'E5' = 'ENTERPRISEPREMIUM'
         }
+        SchemaVersion = $SchemaVersion
     }
         
 
@@ -62,6 +38,15 @@ if($Env:SPMTools_TestMode -ne 1) {
         Catch {
             Throw $_
         }
+    }
+
+    #Check if Schema version has changed
+    $SchemaUpdateCondition = (
+        !$Script:Config.ContainsKey('SchemaVersion') -or 
+        $Script:Config.SchemaVersion -lt $SchemaVersion
+    )
+    if($SchemaUpdateCondition) {
+        Update-SPMTConfiguration
     }
 }
 
