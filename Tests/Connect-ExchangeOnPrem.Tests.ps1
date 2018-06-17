@@ -43,38 +43,38 @@ Describe 'SPMTools.Public.Connect-ExchangeOnPrem' {
             }
 
 
-             #Mock Functions we cannot import natively
-             function Get-PSSession { Param($a)}
-             function New-PSSession { Param(
-                 [string]$ConfigurationName,
-                 [string]$ConnectionURI,
-                 [PSCredential]$Credential,
-                 [string]$Authentication
-             )}
-             function Import-PSSession { Param(
-                 [string]$Session,
-                 [switch]$AllowClobber,
-                 [switch]$DisableNameChecking
-             )}
- 
-             #Now Mock them
-             Mock Get-PSSession { 
+            #Mock Functions we cannot import natively
+            function Get-PSSession { Param($a)}
+            function New-PSSession { Param(
+                [string]$ConfigurationName,
+                [string]$ConnectionURI,
+                [PSCredential]$Credential,
+                [string]$Authentication
+            )}
+            function Import-PSSession { Param(
+                [string]$Session,
+                [switch]$AllowClobber,
+                [switch]$DisableNameChecking
+            )}
+
+            #Now Mock them
+            Mock Get-PSSession { 
                 return [pscustomobject]@{
                     ID = 10
                     ConfigurationName = 'Microsoft.Exchange'
                 } 
             }
-             Mock Remove-PSSession { }
-             Mock Get-StoredCredential { return $TestCredential }
-             Mock New-PSSession { return 'TestSession' }
-             Mock Import-PSSession { return @{Name='TestModule'} }
-             Mock Import-Module { }
- 
-             #Run Statement
-             Connect-ExchangeOnPrem -Company $CompanyName
- 
-             #Tests
-             It 'Removes Old Sessions' {
+            Mock Remove-PSSession { }
+            Mock Get-StoredCredential { return $TestCredential }
+            Mock New-PSSession { return 'TestSession' }
+            Mock Import-PSSession { return @{Name='TestModule'} }
+            Mock Import-Module { }
+
+            #Run Statement
+            Connect-ExchangeOnPrem -Company $CompanyName
+
+            #Tests
+            It 'Removes Old Sessions' {
                 Assert-MockCalled Get-PSSession -Times 1 -Exactly
                 $Param = @{
                     CommandName = 'Remove-PSSession'
@@ -85,7 +85,7 @@ Describe 'SPMTools.Public.Connect-ExchangeOnPrem' {
                     }
                 }
                 Assert-MockCalled @Param
-             }
+            }
             It 'Gets credentials from the credential vault' {
                 Assert-MockCalled Get-StoredCredential -ParameterFilter { $Target -eq "OnPrem_$CompanyName" }
             }
