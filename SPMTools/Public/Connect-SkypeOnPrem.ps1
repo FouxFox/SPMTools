@@ -46,6 +46,7 @@ function Connect-SkypeOnPrem {
         return $RuntimeParameterDictionary
 	}	
     Begin {
+        #OldSessions stay because all commands from online are prefaced by -CSOnline
         $Company = $PSBoundParameters.Company
 
         #Validation Error handling
@@ -66,6 +67,7 @@ function Connect-SkypeOnPrem {
 
         $CompanyObj = $Script:Config.Companies.$Company
 
+        #Make the connection
 	    $Param = @{
 		    ConnectionURI = $CompanyObj.OnPremServices.SkypeUri
         }
