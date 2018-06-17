@@ -32,12 +32,8 @@ Function InitTestVariables {
 						CredentialName = "AD_$DefaultCompanyName"
 					}
 					OnPremServices =  @{
-						Exchange = @{
-							Uri = 'http://ExchangeServer.example.com/PowerShell/'
-						}
-						Skype = @{
-							Uri = 'https://SkypeFE.example.com/OCSPowerShell'
-						}
+						ExchangeUri = 'http://ExchangeServer.example.com/PowerShell/'
+						SkypeUri = 'https://SkypeFE.example.com/OCSPowerShell'
 						CredentialName = "OnPrem_$DefaultCompanyName"
 					}
 					O365 = @{
