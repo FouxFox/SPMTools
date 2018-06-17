@@ -12,6 +12,27 @@ if(!(Get-Module).Name.Contains('ActiveDirectory')) {
     }
 }
 
+# Test for SkypeOnlineConnector
+if(!(Get-Module).Name.Contains('SkypeOnlineConnector')) {
+    Try {
+        Import-Module -Name SkypeOnlineConnector -ErrorAction Stop
+    }
+    Catch {
+        Write-Warning "The SkypeOnlineConnector module failed to load. Some cmdlets may not function correctly."
+    }
+}
+
+# Test for SharepointOnline Module
+if(!(Get-Module).Name.Contains('Microsoft.Online.SharePoint.PowerShell')) {
+    Try {
+        Import-Module -Name SkypeOnlineConnector -ErrorAction Stop
+    }
+    Catch {
+        Write-Warning "The Microsoft.Online.SharePoint.PowerShell module failed to load. Some cmdlets may not function correctly."
+    }
+}
+
+
 # Dot source the first part of this file from .\private\module\PreFunctionLoad.ps1
 . "$PSScriptRoot\private\module\PreFunctionLoad.ps1"
 
