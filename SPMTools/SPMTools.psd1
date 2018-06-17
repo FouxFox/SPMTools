@@ -38,7 +38,7 @@ To Get started, add a new Company with New-Company and then set the required inf
             ModuleVersion='2.0'
         }
     )
-    ModuleVersion = '0.5.3'
+    ModuleVersion = '0.6.0'
     PrivateData = @{
         PSData = @{
             Tags = @(
@@ -49,6 +49,11 @@ To Get started, add a new Company with New-Company and then set the required inf
             LicenseUri = 'https://github.com/AbelFox/SPMTools/blob/master/LICENSE'
             IsPrerelease = $true
             ReleaseNotes = @'
+    ## 0.6.0
+    * Fixed connection issue with Connect-ExchangeOnline when not using MFA
+    * Changed parameter validation behavior for some cmdlets
+    * Various fixes to Connect- cmdlets
+
     ## 0.5.3
     * Added -RunAtStartup parameter for Mount-ADDrive to simplify workflows
     * Fixed formatting issue with Get-Company
