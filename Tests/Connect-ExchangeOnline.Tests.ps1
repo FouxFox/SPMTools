@@ -28,12 +28,7 @@ Describe SPMTools.Public.Connect-ExchangeOnline {
         Remove-Module TestVariables
     }
 
-    InModuleScope SPMTools {     
-        <#
-        Purpose:         Converts the Configuration from JSON to a HashTable
-        Action:          Read-SPMTConfiguration
-        Expected Result: ConvertTo-HashTable is loaded into $Script:Config
-        #>
+    InModuleScope SPMTools {
         Context 'Without MFA' {
             #Setup Variables
             $Script:Config = Copy-Object $DefaultConfig
@@ -51,6 +46,7 @@ Describe SPMTools.Public.Connect-ExchangeOnline {
 
 
             #Mock Functions we cannot import natively
+            function Get-PSSession { Param($a)}
             function New-PSSession { Param(
                 [string]$ConfigurationName,
                 [string]$ConnectionURI,
@@ -65,7 +61,12 @@ Describe SPMTools.Public.Connect-ExchangeOnline {
             )}
 
             #Now Mock them
-            Mock Get-PSSession { }
+            Mock Get-PSSession { 
+                return [pscustomobject]@{
+                    ID = 10
+                    ConfigurationName = 'Microsoft.Exchange'
+                } 
+            }
             Mock Remove-PSSession { }
             Mock Get-StoredCredential { return $TestCredential }
             Mock New-PSSession { return 'TestSession' }
@@ -77,9 +78,16 @@ Describe SPMTools.Public.Connect-ExchangeOnline {
 
             #Tests
             It 'Removes Old Sessions' {
-                Assert-MockCalled Get-PSSession
-                #Currently can't mock a PSSession
-                #Assert-MockCalled Remove-PSSession -ParameterFilter { $Session -eq $OldSessionObj }
+                Assert-MockCalled Get-PSSession -Times 1 -Exactly
+                $Param = @{
+                    CommandName = 'Remove-PSSession'
+                    Times = 1
+                    Exactly = $true
+                    ParameterFilter = {
+                        $ID -eq 10
+                    }
+                }
+                Assert-MockCalled @Param
             }
             It 'Gets credentials from the credential vault' {
                 Assert-MockCalled Get-StoredCredential -ParameterFilter { $Target -eq "O365_$CompanyName" }
