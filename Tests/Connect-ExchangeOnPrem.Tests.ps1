@@ -18,7 +18,7 @@ Import-Module $Script:ModulePath
     change some minor attributes of the function's parameters
     to suit our needs here.
 #>
-Describe SPMTools.Public.Connect-ExchangeOnline {
+Describe 'SPMTools.Public.Connect-ExchangeOnPrem' {
     BeforeAll {
         Import-Module "$PSScriptRoot\TestVariables.psm1"
         InitTestVariables
