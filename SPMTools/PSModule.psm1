@@ -26,9 +26,12 @@ if(!(Get-Module).Name.Contains('SkypeOnlineConnector')) {
             that they were able to make a change to a protected client
             setting even when they failed to do so.
         #>
-        if(!$_.ScriptStackTrace.Contains('Set-WinRMNetworkDelayMS')) {
-            Import-Module -Name SkypeOnlineConnector -WarningAction SilentlyContinue
-            Write-Warning "If the Skype Online team could, they would permanently increase the WSMan Network Delay to 30 seconds without asking. This is recomended for the SkypeOnlineConnector to increase performance. If you would like to do this, run 'Set-Item WSMan:\localhost\Client\NetworkDelayms 30000' from an elevated PowerShell window. Per MSDN, this is the extra time the clinet waits to accomodate Network Delay."
+        if($_.ScriptStackTrace.Contains('Set-WinRMNetworkDelayMS')) {
+            Import-Module -Name SkypeOnlineConnector -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
+            Write-Warning "If the Skype Online team could, they would permanently increase the WSMan Network Delay to 30 seconds without asking. This is recomended for the SkypeOnlineConnector to increase performance. If you would like to do this, run 'Set-Item WSMan:\localhost\Client\NetworkDelayms 30000' from an elevated PowerShell window. Per MSDN, this is the extra time the clinet waits to accomodate network delay."
+        }
+        else {
+            Write-Warning "The SkypeOnlineConnector module failed to load. Some cmdlets may not function correctly."
         }
         
     }
