@@ -11,7 +11,7 @@ Function New-ADDrive {
         Get-PSProvider -PSProvider ActiveDirectory -ErrorAction Stop
         Write-Debug "[New-ADDrive] PSProvider Found"
     }
-    Catch [ProviderNotFoundException] {
+    Catch [System.Management.Automation.ProviderNotFoundException] {
         Write-Debug "[New-ADDrive] PSProvider Missing"
         $ADPS_LoadDriveState = $false
         
