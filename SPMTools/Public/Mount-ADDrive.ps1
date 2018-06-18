@@ -114,10 +114,13 @@ Function Mount-ADDrive {
                         Write-Debug "[Mount-ADDrive] Calling New-ADDrive for $Company"
                         $DriveInformation += New-ADDrive $DomainObj
                     }
+                    if($DriveInformation.count -eq 0) {
+                        Write-Warning 'No Companies marked as favorite.'
+                    }
                 }
             }
             else {
-                Write-Debug "[Mount-ADDrive] no paramter specified"
+                Write-Debug "[Mount-ADDrive] No paramter specified"
                 ForEach ($Company in $Script:Config.Companies.Keys) {
                     Write-Debug "[Mount-ADDrive] Checking company $Company"
                     $CompanyObj = $Script:Config.Companies.$Company
