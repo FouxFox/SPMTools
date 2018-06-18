@@ -114,9 +114,9 @@ Function Mount-ADDrive {
                         Write-Debug "[Mount-ADDrive] Calling New-ADDrive for $Company"
                         $DriveInformation += New-ADDrive $DomainObj
                     }
-                    if($DriveInformation.count -eq 0) {
-                        Write-Warning 'No Companies marked as favorite.'
-                    }
+                }
+                if($DriveInformation.count -eq 0) {
+                    Write-Warning 'No Companies marked as favorite.'
                 }
             }
             else {
