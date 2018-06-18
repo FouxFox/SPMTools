@@ -32,7 +32,11 @@ Mount-ADDrive
 #>
 
 Function Mount-ADDrive {
-    [cmdletBinding(DefaultParameterSetName='All')]
+    [cmdletBinding(
+        DefaultParameterSetName='All',
+        SupportsShouldProcess = $true,
+        ConfirmImpact='high'
+        )]
     Param(
         [Parameter(
             Mandatory=$false,
@@ -49,18 +53,20 @@ Function Mount-ADDrive {
         $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
         $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
 
-        $ValidateSet = $Script:Config.Companies.Keys | Where-Object {
-            $Script:Config.Companies.$_.Domain
-        }
-
         $ParameterAttribute.Mandatory = $false
         $ParameterAttribute.Position = 1
         $ParameterAttribute.ParameterSetName = 'Company'
-        $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($ValidateSet)
 
         $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
         $AttributeCollection.Add($ParameterAttribute)
-        $AttributeCollection.Add($ValidateSetAttribute)
+        
+        $ValidateSet = $Script:Config.Companies.Keys | Where-Object {
+            $Script:Config.Companies.$_.Domain
+        }
+        if($ValidateSet.length -gt 0) {
+            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($ValidateSet)
+            $AttributeCollection.Add($ValidateSetAttribute)
+        }
  
         $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParameterName, [string], $AttributeCollection)
         $RuntimeParameterDictionary.Add($ParameterName, $RuntimeParameter)
@@ -68,7 +74,27 @@ Function Mount-ADDrive {
 	}
     Begin {
         Write-Debug "[Mount-ADDrive] Started"
+        $CompanyName = $PSBoundParameters.Company
 
+        #Validation Error handling
+        if(
+            $PSCmdlet.ParameterSetName -eq 'Company' -and (
+                !$Script:Config.Companies.ContainsKey($CompanyName) -or
+                !$Script:Config.Companies.$CompanyName.Domain
+            )
+        ) {
+            $message = "There is not a company profile available that supports this cmdlet. Please check your configuration and try again."
+            $Param = @{
+                ExceptionName = "System.ArgumentException"
+                ExceptionMessage = $message
+                ErrorId = "ExchangeOnlineNoCompaniesAvailable" 
+                CallerPSCmdlet = $PSCmdlet
+                ErrorCategory = 'InvalidArgument'
+            }
+            ThrowError @Param
+        }
+
+        #Run At Startup
         if($RunAtStartup) {
             if($PSCmdlet.ParameterSetName -eq 'All') {
                 $CMD = 'Mount-ADDrive'
@@ -77,26 +103,28 @@ Function Mount-ADDrive {
                 $CMD = 'Mount-ADDrive -Favorites'
             }
             else {
-                $CMD = "Mount-ADDrive -Company $Company"
+                $CMD = "Mount-ADDrive -Company $CompanyName"
             }
 
-            $SCCaption = "Profile Modification"
-            $RunAtStartupMessage = "This will add '{0}' to your PowerShell Profile. If you need to change this setting in the future, you will need to remove this line from your profile. Are you sure you want to do this?"
+            $SPCaption = "Profile Modification"
+            $SPDescriptionMessage = "Adding '{0}' to '{1}'"
+            $SPWarningMessage = "This will add '{0}' to your PowerShell Profile. If you need to change this setting in the future, you will need to remove this line from your profile. Are you sure you want to do this?"
 
-            $SCMessage = $RunAtStartupMessage -f $CMD
+            $SPDescription = $SPDescriptionMessage -f $CMD,$Profile
+            $SPWarning = $SPWarningMessage -f $CMD
             
-            $Answer = $PSCmdlet.ShouldContinue($SCMessage,$SCCaption,$true,[ref]$false,[ref]$false)
+            $Answer = $PSCmdlet.ShouldProcess($SPDescription,$SPWarning,$SPCaption)
 
             if($Answer) {
                 $CMD | Out-File -FilePath $profile -Append
             }
         }
+        #Actually mounting the drives
         else {
             $DriveInformation = @()
 
             if($PSBoundParameters.Company) {
                 Write-Debug "[Mount-ADDrive] Company parameter specified as $($PSBoundParameters.Company)"
-                $CompanyName = $PSBoundParameters.Company
                 $CompanyObj = $Script:Config.Companies.$CompanyName
                 $DomainObj = $CompanyObj.Domain
                 
