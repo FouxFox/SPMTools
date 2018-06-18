@@ -1,10 +1,10 @@
 Function New-ADDrive {
     Param(
-        $input
+        $InputObj
     )
 
     Write-Debug "[New-ADDrive] Started"
-    $inputObj = $PSBoundParameters.input
+    $inputObj = $PSBoundParameters.InputObj
 
     Write-Debug "[New-ADDrive] Checking for ActiveDirectory PSProvider"
     Try {

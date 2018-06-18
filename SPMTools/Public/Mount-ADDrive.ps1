@@ -101,7 +101,7 @@ Function Mount-ADDrive {
                 $DomainObj = $CompanyObj.Domain
                 
                 Write-Debug "[Mount-ADDrive] Calling New-ADDrive"
-                $DriveInformation += New-ADDrive $DomainObj
+                $DriveInformation += New-ADDrive -InputObj $DomainObj
             }
             elseif ($Favorites) {
                 Write-Debug "[Mount-ADDrive] Favorites paramters specified"
@@ -112,7 +112,7 @@ Function Mount-ADDrive {
                     
                     if($DomainObj -and $DomainObj.Favorite) {
                         Write-Debug "[Mount-ADDrive] Calling New-ADDrive for $Company"
-                        $DriveInformation += New-ADDrive $DomainObj
+                        $DriveInformation += New-ADDrive -InputObj $DomainObj
                     }
                 }
                 if($DriveInformation.count -eq 0) {
@@ -128,7 +128,7 @@ Function Mount-ADDrive {
                     
                     if($DomainObj) {
                         Write-Debug "[Mount-ADDrive] Calling New-ADDrive for $Company"
-                        $DriveInformation += New-ADDrive -Input $DomainObj
+                        $DriveInformation += New-ADDrive -InputObj $DomainObj
                     }
                 }
             }
