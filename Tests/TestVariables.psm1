@@ -8,6 +8,14 @@ Function InitTestVariables {
 	}
 	Set-Variable @Param
 
+	$Param = @{
+		Name = 'DefaultCompanyName2'
+		Option = 'ReadOnly'
+		Scope = 'Global'
+		Value = 'TestCompany2'
+	}
+	Set-Variable @Param
+
 	$TestPassword = ConvertTo-SecureString -Force -AsPlainText -String "password"
 	$Param = @{
 		Name = 'DefaultTestCredential'
@@ -43,6 +51,21 @@ Function InitTestVariables {
 						SharePointUri = $false
 						CredentialName = "O365_$DefaultCompanyName"
 					}
+				}
+				$DefaultCompanyName2 = @{
+					Domain = @{
+						PSDriveLetter = 'OR'
+						FQDN = 'org.com'
+						PreferedDomainController = 'testdc.org.com'
+						Favorite = $true
+						CredentialName = "AD_$DefaultCompanyName2"
+					}
+					OnPremServices =  @{
+						ExchangeUri = $false
+						SkypeUri = $false
+						CredentialName = $false
+					}
+					O365 = $false
 				} 
 			}
 		}
@@ -55,6 +78,7 @@ Function InitTestVariables {
 Function RemoveTestVariables {
 	$Vars = @(
 		'DefaultCompanyName'
+		'DefaultCompanyName2'
 		'DefaultTestCredential'
 		'DefaultConfig'
 	)
