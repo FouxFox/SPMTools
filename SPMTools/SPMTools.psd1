@@ -38,7 +38,7 @@ To Get started, add a new Company with New-Company and then set the required inf
             ModuleVersion='2.0'
         }
     )
-    ModuleVersion = '0.6.0'
+    ModuleVersion = '0.7.0'
     PrivateData = @{
         PSData = @{
             Tags = @(
@@ -49,6 +49,13 @@ To Get started, add a new Company with New-Company and then set the required inf
             LicenseUri = 'https://github.com/AbelFox/SPMTools/blob/master/LICENSE'
             IsPrerelease = $true
             ReleaseNotes = @'
+    ## 0.7.0
+    * Added Schema Versioning system for the SPMT Configuration file
+    * Added warning when Mount-ADDrive -Favorite is called but no companies are favorites
+    * Fixed error where SkypeOnlineConnector imported twice
+    * Fixed behavior around the SkypeOnlineConnector's DelayMS
+    * Fixed issue with New-ADDrive where it fails to catch an exception
+
     ## 0.6.0
     * Fixed connection issue with Connect-ExchangeOnline when not using MFA
     * Changed parameter validation behavior for some cmdlets
