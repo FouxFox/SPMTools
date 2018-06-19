@@ -162,11 +162,8 @@ Function Mount-ADDrive {
             }
 
             Write-Debug "[Mount-ADDrive] Printing drive info"
-            #This command can sometimes output both ADDriveInfo Objects AND
-            #ProviderInfo objects. This filter stops that.
-            #It's also nice to show the user what they're connected to.
-            $Filter = { $_.GetType().Name -eq 'ADDriveInfo' }
-            $DriveInformation | Where-Object $Filter | Format-Table -AutoSize Name,Server
+            #Need to wirte a type for this
+            $DriveInformation | Format-Table -AutoSize Name,Server
         }
     }
 }
