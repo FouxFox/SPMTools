@@ -8,7 +8,7 @@ Function New-ADDrive {
 
     Write-Debug "[New-ADDrive] Checking for ActiveDirectory PSProvider"
     Try {
-        Get-PSProvider -PSProvider ActiveDirectory -ErrorAction Stop
+        $null = Get-PSProvider -PSProvider ActiveDirectory -ErrorAction Stop
         Write-Debug "[New-ADDrive] PSProvider Found"
     }
     Catch [System.Management.Automation.ProviderNotFoundException] {
@@ -33,7 +33,7 @@ Function New-ADDrive {
         Import-Module ActiveDirectory -ErrorAction Stop
 
         #Reset value back to defaults
-        if(ADPS_LoadDriveState -eq 1) {
+        if($ADPS_LoadDriveState -eq 1) {
             Write-Debug "[New-ADDrive] Restoring LoadDefaultDrive state"
             $Env:ADPS_LoadDefaultDrive = $ADPS_LoadDriveState
         }
@@ -44,7 +44,7 @@ Function New-ADDrive {
         Write-Debug "[New-ADDrive] Checking if $($DomainObj.PSDriveLetter) exists"
         $DriveExists = $false
         Try {
-            Get-PSDrive $DomainObj.PSDriveLetter -ErrorAction Stop
+            $null = Get-PSDrive -Name $DomainObj.PSDriveLetter -ErrorAction Stop
             $DriveExists = $true
             Write-Debug "[New-ADDrive] Drive exists"
         } 
