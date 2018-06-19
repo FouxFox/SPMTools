@@ -9,15 +9,6 @@ Import-Module $Script:ModulePath
 
 
 #Test Suite
-<#
-    There is no way to constuct a PSSession Object
-    This creates problems when trying to return such and object
-    from New-PSSession and Get-PSSession. To get around this
-    limitation, another layer of mocking is injected before 
-    Pester Mocks each of the commands. In this way, we can
-    change some minor attributes of the function's parameters
-    to suit our needs here.
-#>
 Describe SPMTools.Public.New-ADDrive {
     BeforeAll {
         Import-Module "$PSScriptRoot\TestVariables.psm1"
