@@ -80,7 +80,9 @@ Function New-ADDrive {
             New-PSDrive @Param
         }
         else {
-            Throw "The drive '$($DomainObj.PSDriveLetter)' exists. Please unmount it before calling Import-ADDrive again"
+            $message = "The drive '$($DomainObj.PSDriveLetter)' exists. Please unmount it before calling '$($PSCmdlet.MyInvocation.InvocationName)' again"
+            $Exception = [System.Management.Automation.DriveNotFoundException]::new($message)
+            Throw $Exception
         }
     }
 }
