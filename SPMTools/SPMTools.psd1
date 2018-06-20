@@ -55,6 +55,7 @@ To Get started, add a new Company with New-Company and then set the required inf
     * Changes to module core to streamline testing
     * Improved up Schema Version system
     * Modifications to Install-ExoModule to better account for issues
+    * Fixed issue where Mount-ADDrive would fail to mount multiple drives if one existed
 
     ## 0.7.0
     * Added Schema Versioning system for the SPMT Configuration file
