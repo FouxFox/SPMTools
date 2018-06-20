@@ -22,10 +22,10 @@ To Get started, add a new Company with New-Company and then set the required inf
         'Format-Sorted'
         'Get-Company'
         'Get-TranslatedSID'
+        'Mount-ADDrive'
         'New-Company'
         'Remove-Company'
         'Set-Company'
-        'Mount-ADDrive'
     )
     VariablesToExport = "*"
     AliasesToExport = "*"
@@ -38,7 +38,8 @@ To Get started, add a new Company with New-Company and then set the required inf
             ModuleVersion='2.0'
         }
     )
-    ModuleVersion = '0.7.0'
+    HelpInfoURI = 'https://github.com/AbelFox/SPMTools/blob/master/README.md'
+    ModuleVersion = '0.7.1'
     PrivateData = @{
         PSData = @{
             Tags = @(
@@ -49,6 +50,12 @@ To Get started, add a new Company with New-Company and then set the required inf
             LicenseUri = 'https://github.com/AbelFox/SPMTools/blob/master/LICENSE'
             IsPrerelease = $true
             ReleaseNotes = @'
+    ## 0.7.1
+    * Modifications to Mount-ADDrive's supporting code to increase perfromance
+    * Changes to module core to streamline testing
+    * Improved up Schema Version system
+    * Modifications to Install-ExoModule to better account for issues
+
     ## 0.7.0
     * Added Schema Versioning system for the SPMT Configuration file
     * Added warning when Mount-ADDrive -Favorite is called but no companies are favorites
@@ -103,6 +110,4 @@ To Get started, add a new Company with New-Company and then set the required inf
 '@
         }
     }
-    
-    HelpInfoURI = 'https://github.com/AbelFox/SPMTools/blob/master/README.md'
-    }
+}
