@@ -9,7 +9,7 @@ Import-Module $Script:ModulePath
 
 
 #Test Suite
-Describe SPMTools.Public.Connect-ExchangeOnline {
+Describe SPMTools.Public.Get-SPMTSchemaVersion {
     InModuleScope SPMTools {
         $VersionTestObj = @{
             #ModuleVersion = Expected Schema

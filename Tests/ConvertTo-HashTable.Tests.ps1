@@ -9,7 +9,7 @@ Import-Module $Script:ModulePath
 
 
 #Test Suite
-Describe SPMTools.Public.Connect-ExchangeOnline {
+Describe SPMTools.Public.ConvertTo-HashTable {
     InModuleScope SPMTools {
         $TestObj = [pscustomobject]@{
             Level2 = [pscustomobject]@{

@@ -9,7 +9,7 @@ Import-Module $Script:ModulePath
 
 
 #Test Suite
-Describe SPMTools.Public.Connect-ExchangeOnline {
+Describe SPMTools.Public.Update-SPMTConfiguration {
     InModuleScope SPMTools {
         $ExpectedObject = @{
             SchemaVersion = 1
