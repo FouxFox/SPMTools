@@ -128,8 +128,13 @@ Function Mount-ADDrive {
                 $CompanyObj = $Script:Config.Companies.$CompanyName
                 $DomainObj = $CompanyObj.Domain
                 
-                Write-Debug "[Mount-ADDrive] Calling New-ADDrive"
-                $DriveInformation += New-ADDrive -InputObj $DomainObj
+                Write-Debug "[Mount-ADDrive] Calling New-ADDrive for $Company"
+                Try {
+                    $DriveInformation += New-ADDrive -InputObj $DomainObj -ErrorAction Stop
+                }
+                Catch {
+                    Write-Warning $_.Exception.Message
+                }
             }
             elseif ($Favorites) {
                 Write-Debug "[Mount-ADDrive] Favorites paramters specified"
@@ -140,7 +145,12 @@ Function Mount-ADDrive {
                     
                     if($DomainObj -and $DomainObj.Favorite) {
                         Write-Debug "[Mount-ADDrive] Calling New-ADDrive for $Company"
-                        $DriveInformation += New-ADDrive -InputObj $DomainObj
+                        Try {
+                            $DriveInformation += New-ADDrive -InputObj $DomainObj -ErrorAction Stop
+                        }
+                        Catch {
+                            Write-Warning $_.Exception.Message
+                        }
                     }
                 }
                 if($DriveInformation.count -eq 0) {
@@ -156,7 +166,12 @@ Function Mount-ADDrive {
                     
                     if($DomainObj) {
                         Write-Debug "[Mount-ADDrive] Calling New-ADDrive for $Company"
-                        $DriveInformation += New-ADDrive -InputObj $DomainObj
+                        Try {
+                            $DriveInformation += New-ADDrive -InputObj $DomainObj -ErrorAction Stop
+                        }
+                        Catch {
+                            Write-Warning $_.Exception.Message
+                        }
                     }
                 }
             }
