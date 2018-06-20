@@ -4,8 +4,28 @@ function Get-SPMTSchemaVersion {
     )
     
     $SchemaVersionTable = @{
+        '0.0.0' = 0
         '0.7.0' = 1
     }
 
-    $SchemaVersionTable[$Version]
+    if($SchemaVersionTable.ContainsKey($Version)) {
+        #For exact matches, skip the search
+        return $SchemaVersionTable[$Version]
+    }
+    else {
+        #Otherwise search
+        $VersionList = $SchemaVersionTable.Keys | Sort-Object -Descending
+        $VersionIndex = 0
+        $VersionFound = $false
+        While(!$VersionFound -and $VersionIndex -lt $VersionList.Count) {
+            if($VersionList[$VersionIndex] -gt $Version) {
+                $VersionIndex++
+            }
+            else {
+                $VersionFound = $true
+            }
+        }
+
+        return $SchemaVersionTable[$VersionList[$VersionIndex]]
+    }
 }
