@@ -162,7 +162,7 @@ Describe SPMTools.Public.New-ADDrive {
             #Setup Variables
             $DomainObj = Copy-Object $DefaultConfig.Companies.$DefaultCompanyName.Domain
             $DomainObj.CredentialName = $false
-            $ErrorText = "The drive '$($DomainObj.PSDriveLetter)' exists. Please unmount it before calling Import-ADDrive again"
+            $ErrorText = "The drive '$($DomainObj.PSDriveLetter)' exists. Please unmount it before calling '$($PSCmdlet.MyInvocation.InvocationName)' again"
 
             #Mocks
             Mock Get-PSDrive {}
