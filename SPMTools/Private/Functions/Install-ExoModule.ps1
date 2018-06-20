@@ -51,7 +51,7 @@ function Install-EXOModule {
                         ExceptionMessage = $message
                         ErrorId = "EXOModuleElevatePermissions" 
                         CallerPSCmdlet = $PSCmdlet
-                        ErrorCategory = 'AccessDenied'
+                        ErrorCategory = 'SecurityError'
                     }
                     ThrowError @Param
                 }
@@ -72,7 +72,7 @@ function Install-EXOModule {
                         ExceptionMessage = $message
                         ErrorId = "EXOModuleManifestDownload" 
                         CallerPSCmdlet = $PSCmdlet
-                        ErrorCategory = 'Timeout'
+                        ErrorCategory = 'ConnectionError'
                     }
                     ThrowError @Param
                 }
@@ -84,7 +84,7 @@ function Install-EXOModule {
                         ExceptionMessage = $message
                         ErrorId = "EXOModuleApplicationDownload" 
                         CallerPSCmdlet = $PSCmdlet
-                        ErrorCategory = 'Timeout'
+                        ErrorCategory = 'ConnectionError'
                     }
                     ThrowError @Param
             }
