@@ -8,33 +8,53 @@ function Install-EXOModule {
     $ElevatePermissions = $true
         Try { 
             Add-Type -AssemblyName System.Deployment
-            
-            Write-Verbose "Start installation of ClockOnce Application $Manifest "
+            Write-Verbose "Start installation of ClockOnce Application $Manifest"
     
             $RemoteURI = [URI]::New( $Manifest , [UriKind]::Absolute)
-    
-            $HostingManager = New-Object System.Deployment.Application.InPlaceHostingManager -ArgumentList $RemoteURI , $False
+            $HostingManager = New-Object System.Deployment.Application.InPlaceHostingManager -ArgumentList $RemoteURI,$False
         
-            #register an event to trigger custom event (yep, its a hack)
-            Register-ObjectEvent -InputObject $HostingManager -EventName GetManifestCompleted -Action { 
-                new-event -SourceIdentifier "ManifestDownloadComplete"
-            } | Out-Null
-            #register an event to trigger custom event (yep, its a hack)
-            Register-ObjectEvent -InputObject $HostingManager -EventName DownloadApplicationCompleted -Action { 
-                new-event -SourceIdentifier "DownloadApplicationCompleted"
-            } | Out-Null
+            #Register custom events to catch the completed downloads
+            $Param = @{
+                InpurtObject = $HostingManager
+                EventName = GetMainifestCompleted
+                Action = {
+                    New-Event -SourceIdentifier "ManifestDownloadComplete"
+                }
+            }
+            $null = Register-ObjectEvent @Param
+
+            $Param = @{
+                InpurtObject = $HostingManager
+                EventName = DownloadApplicationCompleted
+                Action = {
+                    New-Event -SourceIdentifier "DownloadApplicationCompleted"
+                }
+            }
+            $null = Register-ObjectEvent @Param
     
-            #get the Manifest
+            #Get the Manifest
             $HostingManager.GetManifestAsync()
     
-            #Waitfor up to 5s for our custom event
+            #Wait for up to 5s for our custom event
             $ManifestEvent = Wait-Event -SourceIdentifier "ManifestDownloadComplete" -Timeout 5
             if ($ManifestEvent) {
                 $ManifestEvent | Remove-Event
                 Write-Verbose "ClickOnce Manifest Download Completed"
-    
-                $HostingManager.AssertApplicationRequirements($ElevatePermissions)
-                #todo :: can this fail ?
+                
+                Try {
+                    $HostingManager.AssertApplicationRequirements($ElevatePermissions)
+                }
+                Catch {
+                    $message = "Unable to elevate permissions to install Exchange Online Powershell Module"
+                    $Param = @{
+                        ExceptionName = "System.Security.AccessControl.PrivilegeNotHeldException"
+                        ExceptionMessage = $message
+                        ErrorId = "EXOModuleElevatePermissions" 
+                        CallerPSCmdlet = $PSCmdlet
+                        ErrorCategory = 'AccessDenied'
+                    }
+                    ThrowError @Param
+                }
                 
                 #Download Application
                 $HostingManager.DownloadApplicationAsync()
@@ -45,63 +65,34 @@ function Install-EXOModule {
                     $DownloadEvent | Remove-Event
                     Write-Verbose "ClickOnce Application Download Completed"
                 } else {
-                    Write-error "ClickOnce Application Download did not complete in time (15s)"
+                    #We didn't download the app in time
+                    $message = "ClickOnce Application Download did not complete in time (15s)"
+                    $Param = @{
+                        ExceptionName = "System.TimeoutException"
+                        ExceptionMessage = $message
+                        ErrorId = "EXOModuleManifestDownload" 
+                        CallerPSCmdlet = $PSCmdlet
+                        ErrorCategory = 'Timeout'
+                    }
+                    ThrowError @Param
                 }
             } else {
-               Write-error "ClickOnce Manifest Download did not complete in time (5s)"
+                #We didn't download the manifest in time
+               $message = "ClickOnce Manifest Download did not complete in time (5s)"
+                    $Param = @{
+                        ExceptionName = "System.TimeoutException"
+                        ExceptionMessage = $message
+                        ErrorId = "EXOModuleApplicationDownload" 
+                        CallerPSCmdlet = $PSCmdlet
+                        ErrorCategory = 'Timeout'
+                    }
+                    ThrowError @Param
             }
     
             #Clean Up
         } finally {
             #get rid of our eventhandlers
-            Get-EventSubscriber | Where-Object {
-                $_.SourceObject.ToString() -eq 'System.Deployment.Application.InPlaceHostingManager'
-            } | Unregister-Event
+            $Filter = { $_.SourceObject.ToString() -eq 'System.Deployment.Application.InPlaceHostingManager' }
+            Get-EventSubscriber | Where-Object $Filter | Unregister-Event
         }
     }
-
-    
-    <#
-    Function Test-ClickOnce {
-    [CmdletBinding()] 
-    Param(
-        $ApplicationName = "Microsoft Exchange Online Powershell Module"
-    )
-        return ( (Get-ClickOnce -ApplicationName $ApplicationName) -ne $null) 
-    }
-    
-    
-    # Simple UnInstall
-    function Uninstall-ClickOnce {
-    [CmdletBinding()] 
-    Param(
-        $ApplicationName = "Microsoft Exchange Online Powershell Module"
-    )
-        $app=Get-ClickOnce -ApplicationName $ApplicationName
-    
-        #Deinstall One to remove all instances
-        if ($App) { 
-            $selectedUninstallString = $App.UninstallString 
-            #Seperate cmd from parameters (First Space)
-            $parts = $selectedUninstallString.Split(' ', 2)
-            Start-Process -FilePath $parts[0] -ArgumentList $parts[1] -Wait 
-            #ToDo : Automatic press of OK
-            #Start-Sleep 5
-            #$wshell = new-object -com wscript.shell
-            #$wshell.sendkeys("`"OK`"~")
-    
-            $app=Get-ClickOnce -ApplicationName $ApplicationName
-            if ($app) {
-                Write-verbose 'De-installation aborted'
-                #return $false
-            } else {
-                Write-verbose 'De-installation completed'
-                #return $true
-            } 
-            
-        } else {
-            #return $null
-        }
-    }
-
-    #>
