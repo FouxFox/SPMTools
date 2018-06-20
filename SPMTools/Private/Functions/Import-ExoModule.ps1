@@ -19,12 +19,13 @@ function Import-EXOModule {
     $LocalPath = $env:LOCALAPPDATA + "\Apps\2.0\"
     $DLLName = 'Microsoft.Exchange.Management.ExoPowershellModule.dll'
     
+    $Filter = { $_ -notmatch "_none_" }
     $Param = @{
         Path = $LocalPath
         Filter = $DLLName
         Recurse = $true
     }
-    $Module = (Get-ChildItem @Param).FullName | Where-Object { $_ -notmatch "_none_" } | Select-Object -First 1
+    $Module = (Get-ChildItem @Param).FullName | Where-Object $Filter | Select-Object -First 1
 
     if($Module) {
         Try {
