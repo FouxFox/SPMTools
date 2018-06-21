@@ -40,7 +40,7 @@ To Get started, add a new Company with New-Company and then set the required inf
         }
     )
     HelpInfoURI = 'https://github.com/AbelFox/SPMTools/blob/master/README.md'
-    ModuleVersion = '0.7.4'
+    ModuleVersion = '0.7.5'
     PrivateData = @{
         PSData = @{
             Tags = @(
@@ -51,6 +51,9 @@ To Get started, add a new Company with New-Company and then set the required inf
             LicenseUri = 'https://github.com/AbelFox/SPMTools/blob/master/LICENSE'
             IsPrerelease = $true
             ReleaseNotes = @'
+    ## 0.7.5
+    * Fixed issue with Install-ExoModule that would cause Connect-ExchangeOnline to crash
+
     ## 0.7.4
     * Fixed error where Get-DellExpressServiceCode is not exported
 
