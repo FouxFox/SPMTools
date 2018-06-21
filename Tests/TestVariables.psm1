@@ -97,3 +97,37 @@ function Copy-Object {
     $formatter.Deserialize($memStream)
 }
 
+#To uninstall the Click Once App for testing
+# Simple UnInstall
+function Uninstall-ExoModule {
+    [CmdletBinding()] 
+    Param(
+        $ApplicationName = "Microsoft Exchange Online Powershell Module"
+    )
+        $app=Get-ClickOnce -ApplicationName $ApplicationName
+    
+        #Deinstall One to remove all instances
+        if ($App) { 
+            $selectedUninstallString = $App.UninstallString 
+            #Seperate cmd from parameters (First Space)
+            $parts = $selectedUninstallString.Split(' ', 2)
+            Start-Process -FilePath $parts[0] -ArgumentList $parts[1] -Wait 
+            #ToDo : Automatic press of OK
+            #Start-Sleep 5
+            #$wshell = new-object -com wscript.shell
+            #$wshell.sendkeys("`"OK`"~")
+    
+            $app=Get-ClickOnce -ApplicationName $ApplicationName
+            if ($app) {
+                Write-verbose 'De-installation aborted'
+                #return $false
+            } else {
+                Write-verbose 'De-installation completed'
+                #return $true
+            } 
+            
+        } else {
+            #return $null
+        }
+    }
+    #>
