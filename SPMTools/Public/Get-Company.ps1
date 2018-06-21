@@ -29,7 +29,7 @@ Function Get-Company {
         $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
         $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
 
-        $ParameterAttribute.Mandatory = $true
+        $ParameterAttribute.Mandatory = $false
         $ParameterAttribute.Position = 1
         $ParameterAttribute.ParameterSetName = 'Specific'
         $ParameterAttribute.ValueFromPipeline = $true
@@ -79,22 +79,22 @@ Function Get-Company {
         }
     }
     Process {
-        $Name = $PSBoundParameters.Name
-
-        #Validation Error handling
-        if(!$Script:Config.Companies.ContainsKey($Name)) {
-            $message = "No companies have been set up. Please use the New-Company command to create one."
-            $Param = @{
-                ExceptionName = "System.ArgumentException"
-                ExceptionMessage = $message
-                ErrorId = "GetCompanyNoCompaniesAvailable" 
-                CallerPSCmdlet = $PSCmdlet
-                ErrorCategory = 'InvalidArgument'
-            }
-            ThrowError @Param
-        }
-
         if($PSCmdlet.ParameterSetName -eq 'Specific') {
+            $Name = $PSBoundParameters.Name
+
+            #Validation Error handling
+            if(!$Script:Config.Companies.ContainsKey($Name)) {
+                $message = "No companies have been set up. Please use the New-Company command to create one."
+                $Param = @{
+                    ExceptionName = "System.ArgumentException"
+                    ExceptionMessage = $message
+                    ErrorId = "GetCompanyNoCompaniesAvailable" 
+                    CallerPSCmdlet = $PSCmdlet
+                    ErrorCategory = 'InvalidArgument'
+                }
+                ThrowError @Param
+            }
+
             $CompanyObj = $Script:Config.Companies.$Name
             $Output = [ordered]@{
                 Name = $Name
@@ -133,7 +133,7 @@ Function Get-Company {
                     $Output.Add('ExchangeURI',$OnPremObj.ExchangeURI)
                 }
                 if($OnPremObj.SkypeURI) {
-                    $Output.Add('ExchangeURI',$OnPremObj.SkypeURI)
+                    $Output.Add('SkypeURI',$OnPremObj.SkypeURI)
                 }
                 if($OnPremObj.CredentialName) {
                     $Output.Add('OnPremAuthType','Stored')
