@@ -28,19 +28,21 @@ Function Remove-Company {
         $ParameterName = 'Name'
         $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
         $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
-
-        $ParameterAttribute.Mandatory = $true
-        $ParameterAttribute.Position = 1
-        $ParameterAttribute.ValueFromPipeline = $true
-
         $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-        $AttributeCollection.Add($ParameterAttribute)
 
         $ValidateSet = $Script:Config.Companies.Keys
         if($ValidateSet.length -gt 0) {
+            $ParameterAttribute.Mandatory = $true
             $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($ValidateSet)
             $AttributeCollection.Add($ValidateSetAttribute)
         }
+        else {
+            $ParameterAttribute.Mandatory = $false
+        }
+
+        $ParameterAttribute.Position = 1
+        $ParameterAttribute.ValueFromPipeline = $true
+        $AttributeCollection.Add($ParameterAttribute)
  
         $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParameterName, [string], $AttributeCollection)
         $RuntimeParameterDictionary.Add($ParameterName, $RuntimeParameter)
