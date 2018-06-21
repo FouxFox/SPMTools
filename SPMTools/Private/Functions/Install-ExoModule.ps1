@@ -15,7 +15,7 @@ function Install-EXOModule {
         
             #Register custom events to catch the completed downloads
             $Param = @{
-                InpurtObject = $HostingManager
+                InputObject = $HostingManager
                 EventName = 'GetMainifestCompleted'
                 Action = {
                     New-Event -SourceIdentifier "ManifestDownloadComplete"
@@ -24,7 +24,7 @@ function Install-EXOModule {
             $null = Register-ObjectEvent @Param
 
             $Param = @{
-                InpurtObject = $HostingManager
+                InputObject = $HostingManager
                 EventName = 'DownloadApplicationCompleted'
                 Action = {
                     New-Event -SourceIdentifier "DownloadApplicationCompleted"
