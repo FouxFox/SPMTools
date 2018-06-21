@@ -21,6 +21,7 @@ To Get started, add a new Company with New-Company and then set the required inf
         'Connect-SkypeOnPrem'
         'Format-Sorted'
         'Get-Company'
+        'Get-DellExpressServiceCode'
         'Get-TranslatedSID'
         'Mount-ADDrive'
         'New-Company'
@@ -39,7 +40,7 @@ To Get started, add a new Company with New-Company and then set the required inf
         }
     )
     HelpInfoURI = 'https://github.com/AbelFox/SPMTools/blob/master/README.md'
-    ModuleVersion = '0.7.3'
+    ModuleVersion = '0.7.4'
     PrivateData = @{
         PSData = @{
             Tags = @(
@@ -50,6 +51,9 @@ To Get started, add a new Company with New-Company and then set the required inf
             LicenseUri = 'https://github.com/AbelFox/SPMTools/blob/master/LICENSE'
             IsPrerelease = $true
             ReleaseNotes = @'
+    ## 0.7.4
+    * Fixed error where Get-DellExpressServiceCode is not exported
+
     ## 0.7.3
     * Added Get-DellExpressServiceCode
 
