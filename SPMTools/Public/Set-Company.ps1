@@ -209,7 +209,8 @@ Function Set-Company {
             Mandatory=$true
         )] 
         [pscredential]$OnlineCredential,
-
+        
+        <#
         [Parameter(
             ParameterSetName='Online',
             Mandatory=$false
@@ -233,7 +234,7 @@ Function Set-Company {
             Mandatory=$false
         )] 
         [string]$OnlineDirSyncDC,
-
+        #>
 
         # Removal Set
         [Parameter(Mandatory=$false)]
@@ -314,7 +315,7 @@ Function Set-Company {
                 $CompanyObj.Domain.Favorite = $true
             }
             else {
-                $CompanyObj.Domain.AutoConnect = $true
+                $CompanyObj.Domain.Favorite = $false
             }
 
             if($ADCredential) {
@@ -344,12 +345,12 @@ Function Set-Company {
             }
 
             if($OnPremSkypeHost) {
-                $Uri = "http://$OnPremSkypeHost/PowerShell/"
+                $Uri = "https://$OnPremSkypeHost/OCSPowerShell/"
                 $CompanyObj.OnPremServices.SkypeURI = $Uri
             }
 
             if($OnPremSkypeURI) {
-                $CompanyObj.OnPremServices.SkpyeURI = $OnPremSkypeURI
+                $CompanyObj.OnPremServices.SkypeURI = $OnPremSkypeURI
             }
 
             if($OnPremCredential) {
@@ -419,7 +420,7 @@ Function Set-Company {
                 $null = New-StoredCredential @Param
                 $CompanyObj.O365.CredentialName = "O365_$CompanyName"
             }
-
+            <#
             if($OnlineAzureUsageLocation) {
                 $CompanyObj.O365.AzureUsageLocation = $OnlineAzureUsageLocation
             }
@@ -435,6 +436,7 @@ Function Set-Company {
             if($OnlineDirSyncDC) {
                 $CompanyObj.O365.DirSyncDC = $OnlineDirSyncDC
             }
+            #>
         }
 
         ## Credential removal
