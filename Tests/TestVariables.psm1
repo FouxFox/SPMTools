@@ -49,6 +49,7 @@ Function InitTestVariables {
 						ExchangeOnlineUri = 'https://outlook.office365.com/powershell-liveid/'
 						SkypeOnlineUri = 'https://online.lync.com/OCSPowerShell'
 						SharePointUri = $false
+						ComplianceCenterUri = 'https://ps.compliance.protection.outlook.com/powershell-liveid/'
 						CredentialName = "O365_$DefaultCompanyName"
 					}
 				}

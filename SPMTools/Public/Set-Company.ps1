@@ -206,6 +206,12 @@ Function Set-Company {
 
         [Parameter(
             ParameterSetName='Online',
+            Mandatory=$false
+        )] 
+        [string]$OnlineComplianceCenterURI,
+
+        [Parameter(
+            ParameterSetName='Online',
             Mandatory=$true
         )] 
         [pscredential]$OnlineCredential,
@@ -372,6 +378,8 @@ Function Set-Company {
                     Mfa = $false
                     ExchangeOnlineUri = $false
                     SkypeOnlineUri = $false
+                    SharePointOnlineUri = $false
+                    ComplianceCenterUri = $false
                     CredentialName = $false
                     AzureUsageLocation = $false
                     RemoteRoutingSuffix = $false
@@ -409,6 +417,14 @@ Function Set-Company {
             else {
                 # This tells Connect-SharePointOnline to use the logon name instead
                 $CompanyObj.O365.SharePointOnlineUri = $false
+            }
+
+            if($OnlineComplianceCenterURI) {
+                $CompanyObj.O365.ComplianceCenterUri = $OnlineComplianceCenterURI
+            }
+            else {
+                # This tells Connect-SharePointOnline to use the logon name instead
+                $CompanyObj.O365.ComplianceCenterUri = $false
             }
 
             if($OnlineCredential) {

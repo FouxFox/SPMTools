@@ -15,7 +15,8 @@ Describe SPMTools.Public.Get-SPMTSchemaVersion {
             #ModuleVersion = Expected Schema
             '0.1.0' = 0
             '0.7.0' = 1
-            '0.8.1' = 1
+            '0.8.1' = 2
+            '0.9.0' = 2
         }
 
         ForEach ($ver in $VersionTestObj.Keys) {

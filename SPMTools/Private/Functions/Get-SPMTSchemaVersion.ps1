@@ -6,6 +6,7 @@ function Get-SPMTSchemaVersion {
     $SchemaVersionTable = @{
         '0.0.0' = 0
         '0.7.0' = 1
+        '0.8.0' = 2
     }
 
     if($SchemaVersionTable.ContainsKey($Version)) {

@@ -14,6 +14,7 @@ To Get started, add a new Company with New-Company and then set the required inf
     PowerShellVersion = '3.0'
     #FormatsToProcess = ''
     FunctionsToExport = @(
+        'Connect-ComplianceCenter'
         'Connect-ExchangeOnline'
         'Connect-ExchangeOnPrem'
         'Connect-SharePointOnline'
@@ -40,7 +41,7 @@ To Get started, add a new Company with New-Company and then set the required inf
         }
     )
     HelpInfoURI = 'https://github.com/AbelFox/SPMTools/blob/master/README.md'
-    ModuleVersion = '0.7.5'
+    ModuleVersion = '0.8.0'
     PrivateData = @{
         PSData = @{
             Tags = @(
@@ -51,6 +52,10 @@ To Get started, add a new Company with New-Company and then set the required inf
             LicenseUri = 'https://github.com/AbelFox/SPMTools/blob/master/LICENSE'
             IsPrerelease = $true
             ReleaseNotes = @'
+    ## 0.8.0
+    * Added Connect-ComplianceCenter cmdlet for connecting to the Office365 Security and Compliance Center
+    * Fixed issue with SharePointURI in Configuration
+
     ## 0.7.5
     * Fixed issue with Install-ExoModule that would cause Connect-ExchangeOnline to crash
 
