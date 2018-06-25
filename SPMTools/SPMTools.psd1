@@ -55,6 +55,7 @@ To Get started, add a new Company with New-Company and then set the required inf
     ## 0.8.0
     * Added Connect-ComplianceCenter cmdlet for connecting to the Office365 Security and Compliance Center
     * Fixed issue with SharePointURI in Configuration
+    * Fixed Module version detection if loaded from folder
 
     ## 0.7.5
     * Fixed issue with Install-ExoModule that would cause Connect-ExchangeOnline to crash

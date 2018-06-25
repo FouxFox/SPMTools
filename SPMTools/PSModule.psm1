@@ -1,5 +1,5 @@
 # Load localized data
-#Import-LocalizedData LocalizedData -filename PSGet.Resource.psd1
+Import-LocalizedData ModuleData -filename SPMTools.psd1
 
 # Load Active Directory so we can use the PSProvider later
 if($Env:SPMTools_TestMode -ne 1) {

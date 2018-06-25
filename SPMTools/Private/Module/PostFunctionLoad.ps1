@@ -1,7 +1,7 @@
 #Content here runs after all functions are loaded
 if($Env:SPMTools_TestMode -ne 1) {
-    $ModuleVersion = (Get-Module -ListAvailable SPMTools).Version
-    $SchemaVersion = Get-SPMTSchemaVersion -Version $ModuleVersion
+    $ModuleVersion = $Script:ModuleData.ModuleVersion
+    $SchemaVersion = Get-SPMTSchemaVersion -Version $ModuleVersion -ErrorAction Stop
     $Script:ConfigLocation = "$($env:APPDATA)\.SPMTools\config.json"
     $script:Config = $null
     $FirstRun = $false
