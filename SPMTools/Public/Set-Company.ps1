@@ -423,8 +423,7 @@ Function Set-Company {
                 $CompanyObj.O365.ComplianceCenterUri = $OnlineComplianceCenterURI
             }
             else {
-                # This tells Connect-SharePointOnline to use the logon name instead
-                $CompanyObj.O365.ComplianceCenterUri = $false
+                $CompanyObj.O365.ComplianceCenterUri = 'https://ps.compliance.protection.outlook.com/powershell-liveid/'
             }
 
             if($OnlineCredential) {
