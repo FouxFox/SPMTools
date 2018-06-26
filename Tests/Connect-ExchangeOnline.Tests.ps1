@@ -142,9 +142,14 @@ Describe SPMTools.Public.Connect-ExchangeOnline {
             $Script:Config = Copy-Object $DefaultConfig
             $CompanyName = $DefaultCompanyName
             $TestCredential = $DefaultTestCredential
+            $CompanyObj = $Script:Config.Companies.$CompanyName
 
             #Mock Functions we cannot import nativly
-            function New-EXOPSSession { Param($UserPrincipalName) }
+            function New-EXOPSSession { Param(
+                $UserPrincipalName,
+                $ConnectionURI,
+                $AzureADAuthorizationEndpointUri
+            ) }
             function Import-PSSession { Param($a) }
 
             #Now Mock them
@@ -181,7 +186,9 @@ Describe SPMTools.Public.Connect-ExchangeOnline {
                     Times = 1
                     Exactly = $true
                     ParameterFilter = {
-                        $UserPrincipalName -eq $TestCredential.Username
+                        $UserPrincipalName -eq $TestCredential.Username -and
+                        $ConnectionURI -eq $CompanyObj.O365.ExchangeOnlineUri -and
+                        $AzureADAuthorizationEndpointUri -eq $CompanyObj.O365.AzureADAuthorizationEndpointUri
                     }
                 }
                 Assert-MockCalled @Param
@@ -193,9 +200,14 @@ Describe SPMTools.Public.Connect-ExchangeOnline {
             $Script:Config = Copy-Object $DefaultConfig
             $CompanyName = $DefaultCompanyName
             $TestCredential = $DefaultTestCredential
+            $CompanyObj = $Script:Config.Companies.$CompanyName
 
             #Mock Functions we cannot import nativly
-            function New-EXOPSSession { Param($UserPrincipalName) }
+            function New-EXOPSSession { Param(
+                $UserPrincipalName,
+                $ConnectionURI,
+                $AzureADAuthorizationEndpointUri
+            ) }
             function Import-PSSession { Param($a) }
 
             #Now Mock them
@@ -225,13 +237,15 @@ Describe SPMTools.Public.Connect-ExchangeOnline {
                 Assert-MockCalled Get-Module -Times 1 -Exactly
                 Assert-MockCalled Import-EXOModule -Times 0 -Exactly
             }
-            It "Creates a session using New-ExoPSSession" {
+            It "Creates a session using New-EXOPSSession" {
                 $Param = @{
-                    CommandName = 'New-ExoPSSession'
+                    CommandName = 'New-EXOPSSession'
                     Times = 2
                     Exactly = $true
                     ParameterFilter = {
-                        $UserPrincipalName -eq $TestCredential.Username
+                        $UserPrincipalName -eq $TestCredential.Username -and
+                        $ConnectionURI -eq $CompanyObj.O365.ExchangeOnlineUri -and
+                        $AzureADAuthorizationEndpointUri -eq $CompanyObj.O365.AzureADAuthorizationEndpointUri
                     }
                 }
                 Assert-MockCalled @Param
@@ -243,9 +257,14 @@ Describe SPMTools.Public.Connect-ExchangeOnline {
             $Script:Config = Copy-Object $DefaultConfig
             $CompanyName = $DefaultCompanyName
             $TestCredential = $DefaultTestCredential
+            $CompanyObj = $Script:Config.Companies.$CompanyName
 
             #Mock Functions we cannot import nativly
-            function New-EXOPSSession { Param($UserPrincipalName) }
+            function New-EXOPSSession { Param(
+                $UserPrincipalName,
+                $ConnectionURI,
+                $AzureADAuthorizationEndpointUri
+            ) }
             function Import-PSSession { Param($a) }
 
             #Now Mock them
@@ -276,7 +295,9 @@ Describe SPMTools.Public.Connect-ExchangeOnline {
                     Times = 3
                     Exactly = $true
                     ParameterFilter = {
-                        $UserPrincipalName -eq $TestCredential.Username
+                        $UserPrincipalName -eq $TestCredential.Username -and
+                        $ConnectionURI -eq $CompanyObj.O365.ExchangeOnlineUri -and
+                        $AzureADAuthorizationEndpointUri -eq $CompanyObj.O365.AzureADAuthorizationEndpointUri
                     }
                 }
                 Assert-MockCalled @Param
@@ -288,9 +309,14 @@ Describe SPMTools.Public.Connect-ExchangeOnline {
             $Script:Config = Copy-Object $DefaultConfig
             $CompanyName = $DefaultCompanyName
             $TestCredential = $DefaultTestCredential
+            $CompanyObj = $Script:Config.Companies.$CompanyName
 
             #Mock Functions we cannot import nativly
-            function New-EXOPSSession { Param($UserPrincipalName) }
+            function New-EXOPSSession { Param(
+                $UserPrincipalName,
+                $ConnectionURI,
+                $AzureADAuthorizationEndpointUri
+            ) }
             function Import-PSSession { Param($a) }
 
             #Now Mock them
@@ -311,7 +337,9 @@ Describe SPMTools.Public.Connect-ExchangeOnline {
                     Times = 1
                     Exactly = $true
                     ParameterFilter = {
-                        $UserPrincipalName -eq $TestCredential.Username
+                        $UserPrincipalName -eq $TestCredential.Username -and
+                        $ConnectionURI -eq $CompanyObj.O365.ExchangeOnlineUri -and
+                        $AzureADAuthorizationEndpointUri -eq $CompanyObj.O365.AzureADAuthorizationEndpointUri
                     }
                 }
                 Assert-MockCalled @Param

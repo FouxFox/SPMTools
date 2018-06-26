@@ -89,8 +89,12 @@ function Connect-ComplianceCenter {
             $Tries = 0
             While (!$CCSession -and $Tries -lt 3) {
                 Try {
-                    Connect-IPPSSession -UserPrincipalName $ConnectionCredentials.UserName
-                    $CCSession = $true
+                    $Param = @{
+                        UserPrincipalName = $ConnectionCredentials.UserName
+                        ConnectionUri = $CompanyObj.O365.ComplianceCenterUri
+                        AzureADAuthorizationEndpointUri = $CompanyObj.O365.AzureADAuthorizationEndpointUri
+                    }
+                    $CCSession = New-EXOPSSession @Param
                     $Tries++
                 }
                 Catch [System.Management.Automation.Remoting.PSRemotingTransportException] {
@@ -125,7 +129,7 @@ function Connect-ComplianceCenter {
             $CCSession = New-PSSession @Param
         }
         
-        if(!$CompanyObj.O365.Mfa -and $CCSession) {
+        if($CCSession) {
             $Param = @{
                 Session = $CCSession
                 AllowClobber = $true

@@ -212,6 +212,12 @@ Function Set-Company {
 
         [Parameter(
             ParameterSetName='Online',
+            Mandatory=$false
+        )] 
+        [string]$OnlineAuthorizationEndpointURI,
+
+        [Parameter(
+            ParameterSetName='Online',
             Mandatory=$true
         )] 
         [pscredential]$OnlineCredential,
@@ -380,6 +386,7 @@ Function Set-Company {
                     SkypeOnlineUri = $false
                     SharePointOnlineUri = $false
                     ComplianceCenterUri = $false
+                    AzureADAuthorizationEndpointUri = $false
                     CredentialName = $false
                     AzureUsageLocation = $false
                     RemoteRoutingSuffix = $false
@@ -424,6 +431,13 @@ Function Set-Company {
             }
             else {
                 $CompanyObj.O365.ComplianceCenterUri = 'https://ps.compliance.protection.outlook.com/powershell-liveid/'
+            }
+
+            if($OnlineAuthorizationEndpointURI) {
+                $CompanyObj.O365.AzureADAuthorizationEndpointUri = $OnlineAuthorizationEndpointURI
+            }
+            else {
+                $CompanyObj.O365.AzureADAuthorizationEndpointUri = 'https://login.windows.net/common'
             }
 
             if($OnlineCredential) {

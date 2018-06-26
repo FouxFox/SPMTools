@@ -89,7 +89,12 @@ function Connect-ExchangeOnline {
             $Tries = 0
             While (!$EXOSession -and $Tries -lt 3) {
                 Try {
-                    $EXOSession = New-ExoPSSession -UserPrincipalName $ConnectionCredentials.UserName
+                    $Param = @{
+                        UserPrincipalName = $ConnectionCredentials.UserName
+                        ConnectionUri = $CompanyObj.O365.ExchangeOnlineUri
+                        AzureADAuthorizationEndpointUri = $CompanyObj.O365.AzureADAuthorizationEndpointUri
+                    }
+                    $EXOSession = New-ExoPSSession @Param
                     $Tries++
                 }
                 Catch [System.Management.Automation.Remoting.PSRemotingTransportException] {

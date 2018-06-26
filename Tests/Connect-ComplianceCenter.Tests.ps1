@@ -142,9 +142,14 @@ Describe SPMTools.Public.Connect-ComplianceCenter {
             $Script:Config = Copy-Object $DefaultConfig
             $CompanyName = $DefaultCompanyName
             $TestCredential = $DefaultTestCredential
+            $CompanyObj = $Script:Config.Companies.$CompanyName
 
             #Mock Functions we cannot import nativly
-            function Connect-IPPSSession { Param($UserPrincipalName) }
+            function New-EXOPSSession { Param(
+                $UserPrincipalName,
+                $ConnectionURI,
+                $AzureADAuthorizationEndpointUri
+            ) }
             function Import-PSSession { Param($a) }
 
             #Now Mock them
@@ -152,7 +157,9 @@ Describe SPMTools.Public.Connect-ComplianceCenter {
             Mock Remove-PSSession { }
             Mock Get-StoredCredential { return $TestCredential }
             Mock Import-EXOModule { }
-            Mock Connect-IPPSSession { }
+            Mock Import-PSSession { return @{Name='Test'} }
+            Mock Import-Module { }
+            Mock New-EXOPSSession { return 'Test' }
             Mock Get-Module {
                 #Get-Module is called twice if the EXO DLL is not loaded
                 #This allows the second call to react differently
@@ -173,13 +180,15 @@ Describe SPMTools.Public.Connect-ComplianceCenter {
                 Assert-MockCalled Get-Module -Times 2 -Exactly
                 Assert-MockCalled Import-EXOModule -Times 1 -Exactly
             }
-            It "Creates a session using Connect-IPPSSession" {
+            It "Creates a session using New-ExoPSSession" {
                 $Param = @{
-                    CommandName = 'Connect-IPPSSession'
+                    CommandName = 'New-ExoPSSession'
                     Times = 1
                     Exactly = $true
                     ParameterFilter = {
-                        $UserPrincipalName -eq $TestCredential.Username
+                        $UserPrincipalName -eq $TestCredential.Username -and
+                        $ConnectionURI -eq $CompanyObj.O365.ComplianceCenterUri -and
+                        $AzureADAuthorizationEndpointUri -eq $CompanyObj.O365.AzureADAuthorizationEndpointUri
                     }
                 }
                 Assert-MockCalled @Param
@@ -191,9 +200,14 @@ Describe SPMTools.Public.Connect-ComplianceCenter {
             $Script:Config = Copy-Object $DefaultConfig
             $CompanyName = $DefaultCompanyName
             $TestCredential = $DefaultTestCredential
+            $CompanyObj = $Script:Config.Companies.$CompanyName
 
             #Mock Functions we cannot import nativly
-            function Connect-IPPSSession { Param($UserPrincipalName) }
+            function New-EXOPSSession { Param(
+                $UserPrincipalName,
+                $ConnectionURI,
+                $AzureADAuthorizationEndpointUri
+            ) }
             function Import-PSSession { Param($a) }
 
             #Now Mock them
@@ -204,12 +218,12 @@ Describe SPMTools.Public.Connect-ComplianceCenter {
             Mock Import-PSSession { return @{Name='Test'} }
             Mock Import-Module { }
             Mock Get-Module { return $true }
-            Mock Connect-IPPSSession {
+            Mock New-EXOPSSession {
                 #Connect-IPPSSession is called twice if there is an issue
                 #building the session the first time.
                 #This allows the second call to react differently
                 Try {
-                    Assert-MockCalled Connect-IPPSSession -Times 2 -Exactly
+                    Assert-MockCalled New-EXOPSSession -Times 2 -Exactly
                     return 'test'
                 }
                 Catch {
@@ -227,13 +241,15 @@ Describe SPMTools.Public.Connect-ComplianceCenter {
                 Assert-MockCalled Get-Module -Times 1 -Exactly
                 Assert-MockCalled Import-EXOModule -Times 0 -Exactly
             }
-            It "Creates a session using Connect-IPPSSession" {
+            It "Creates a session using New-EXOPSSession" {
                 $Param = @{
-                    CommandName = 'Connect-IPPSSession'
+                    CommandName = 'New-EXOPSSession'
                     Times = 2
                     Exactly = $true
                     ParameterFilter = {
-                        $UserPrincipalName -eq $TestCredential.Username
+                        $UserPrincipalName -eq $TestCredential.Username -and
+                        $ConnectionURI -eq $CompanyObj.O365.ComplianceCenterUri -and
+                        $AzureADAuthorizationEndpointUri -eq $CompanyObj.O365.AzureADAuthorizationEndpointUri
                     }
                 }
                 Assert-MockCalled @Param
@@ -245,9 +261,14 @@ Describe SPMTools.Public.Connect-ComplianceCenter {
             $Script:Config = Copy-Object $DefaultConfig
             $CompanyName = $DefaultCompanyName
             $TestCredential = $DefaultTestCredential
+            $CompanyObj = $Script:Config.Companies.$CompanyName
 
             #Mock Functions we cannot import nativly
-            function Connect-IPPSSession { Param($UserPrincipalName) }
+            function New-EXOPSSession { Param(
+                $UserPrincipalName,
+                $ConnectionURI,
+                $AzureADAuthorizationEndpointUri
+            ) }
             function Import-PSSession { Param($a) }
 
             #Now Mock them
@@ -257,18 +278,18 @@ Describe SPMTools.Public.Connect-ComplianceCenter {
             Mock Import-PSSession { return @{Name='Test'} }
             Mock Import-Module { }
             Mock Get-Module { return $true }
-            Mock Connect-IPPSSession {
+            Mock New-EXOPSSession {
                 #Connect-IPPSSession is called twice if there is an issue
                 #building the session the first time.
                 #This allows the second call to react differently
                 Try {
-                    Assert-MockCalled Connect-IPPSSession -Times 4 -Exactly
+                    Assert-MockCalled New-EXOPSSession -Times 4 -Exactly
                     return 'test'
                 }
                 Catch {
-                    $Exp = [System.Management.Automation.Remoting.PSRemotingTransportException]::new()
-                    $Exp.Source = 'Microsoft.Exchange.Management.ExoPowershellModule'
-                    Throw $Exp
+                    #$Exp = [System.Management.Automation.Remoting.PSRemotingTransportException]::new()
+                    #$Exp.Source = 'Microsoft.Exchange.Management.ExoPowershellModule'
+                    #Throw $Exp
                 }
             }
 
@@ -276,13 +297,15 @@ Describe SPMTools.Public.Connect-ComplianceCenter {
             Connect-ComplianceCenter -Company $CompanyName
 
             #Tests
-            It "Creates a session using Connect-IPPSSession" {
+            It "Creates a session using New-EXOPSSession" {
                 $Param = @{
-                    CommandName = 'Connect-IPPSSession'
+                    CommandName = 'New-EXOPSSession'
                     Times = 3
                     Exactly = $true
                     ParameterFilter = {
-                        $UserPrincipalName -eq $TestCredential.Username
+                        $UserPrincipalName -eq $TestCredential.Username -and
+                        $ConnectionURI -eq $CompanyObj.O365.ComplianceCenterUri -and
+                        $AzureADAuthorizationEndpointUri -eq $CompanyObj.O365.AzureADAuthorizationEndpointUri
                     }
                 }
                 Assert-MockCalled @Param
@@ -294,9 +317,14 @@ Describe SPMTools.Public.Connect-ComplianceCenter {
             $Script:Config = Copy-Object $DefaultConfig
             $CompanyName = $DefaultCompanyName
             $TestCredential = $DefaultTestCredential
+            $CompanyObj = $Script:Config.Companies.$CompanyName
 
             #Mock Functions we cannot import nativly
-            function Connect-IPPSSession { Param($UserPrincipalName) }
+            function New-EXOPSSession { Param(
+                $UserPrincipalName,
+                $ConnectionURI,
+                $AzureADAuthorizationEndpointUri
+            ) }
             function Import-PSSession { Param($a) }
 
             #Now Mock them
@@ -304,7 +332,7 @@ Describe SPMTools.Public.Connect-ComplianceCenter {
             Mock Remove-PSSession { }
             Mock Get-StoredCredential { return $TestCredential }
             Mock Get-Module { return $true }
-            Mock Connect-IPPSSession { Throw 'authentication_canceled: User Canceled Action' }
+            Mock New-EXOPSSession { Throw 'authentication_canceled: User Canceled Action' }
             Mock Write-Warning { }
 
             #Run Statement
@@ -313,11 +341,13 @@ Describe SPMTools.Public.Connect-ComplianceCenter {
             #Tests
             It "Does not create a session" {
                 $Param = @{
-                    CommandName = 'Connect-IPPSSession'
+                    CommandName = 'New-EXOPSSession'
                     Times = 1
                     Exactly = $true
                     ParameterFilter = {
-                        $UserPrincipalName -eq $TestCredential.Username
+                        $UserPrincipalName -eq $TestCredential.Username -and
+                        $ConnectionURI -eq $CompanyObj.O365.ComplianceCenterUri -and
+                        $AzureADAuthorizationEndpointUri -eq $CompanyObj.O365.AzureADAuthorizationEndpointUri
                     }
                 }
                 Assert-MockCalled @Param

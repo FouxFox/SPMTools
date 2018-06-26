@@ -450,6 +450,16 @@ Describe SPMTools.Public.Set-Company {
                     ConfigName = 'SharePointOnlineUri'
                     Val = 'Yes.Sharepoint.com'
                 }
+                OnlineComplianceCenterUri = @{
+                    Use = $true
+                    ConfigName = 'ComplianceCenterUri'
+                    Val = 'Test.Compliance.com'
+                }
+                OnlineAuthorizationEndpointUri = @{
+                    Use = $true
+                    ConfigName = 'AzureADAuthorizationEndpointUri'
+                    Val = 'AzureAD.Endpoint.com'
+                }
                 OnlineCredential = @{
                     Use = $true
                     ConfigName = 'CredentialName'

@@ -11,14 +11,18 @@ function Update-SPMTConfiguration {
     }
     if($Script:Config.SchemaVersion -eq 1) {
         $DefaultComplainceCenterUri = 'https://ps.compliance.protection.outlook.com/powershell-liveid/'
+        $DefaultAzureADAuthUri = 'https://login.windows.net/common'
         ForEach ($CompanyName in $Script:Config.Companies.Keys) {
             if($Script:Config.Companies.$CompanyName.O365) {
                 $O365Obj = $Script:Config.Companies.$CompanyName.O365
                 if(!$O365Obj.ContainsKey('SharePointOnlineUri')) {
-                    $Script:Config.Companies.$CompanyName.O365.Add('SharePointOnlineUri',$false) #Added because missing
+                    $O365Obj.Add('SharePointOnlineUri',$false) #Added because missing
                 }
                 if(!$O365Obj.ContainsKey('ComplianceCenterUri')) {
                     $O365Obj.Add('ComplianceCenterUri',$DefaultComplainceCenterUri)
+                }
+                if(!$O365Obj.ContainsKey('AzureADAuthorizationEndpointUri')) {
+                    $O365Obj.Add('AzureADAuthorizationEndpointUri',$DefaultAzureADAuthUri)
                 }
             }
         }

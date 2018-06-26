@@ -149,6 +149,13 @@ Function Get-Company {
                 $Output.Add('MFAEnabled',$O365Obj.Mfa)
                 $Output.Add('ExchangeOnlineUri',$O365Obj.ExchangeOnlineUri)
                 $Output.Add('SkypeOnlineUri',$O365Obj.SkypeOnlineUri)
+
+                if($O365Obj.SharePointOnlineUri) {
+                    $Output.Add('SharePointOnlineUri',$O365Obj.SharePointOnlineUri)
+                }
+
+                $Output.Add('ComplianceCenterUri',$O365Obj.ComplianceCenterUri)
+                $Output.Add('AzureADAuthorizationEndpointUri',$O365Obj.AzureADAuthorizationEndpointUri)
                 
                 if($O365Obj.CredentialName) {
                     $Output.Add('O365AuthType','Stored')
