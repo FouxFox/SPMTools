@@ -173,7 +173,7 @@ Describe SPMTools.Public.Connect-ExchangeOnline {
             }
 
             #Run Statement
-            Connect-ExchangeOnline -Company $CompanyName
+            Connect-ExchangeOnline -Company $CompanyName -TestMode
 
             #Tests
             It 'Loads the EXO DLL' {
@@ -230,7 +230,7 @@ Describe SPMTools.Public.Connect-ExchangeOnline {
             }
 
             #Run Statement
-            Connect-ExchangeOnline -Company $CompanyName
+            Connect-ExchangeOnline -Company $CompanyName -TestMode
 
             #Tests
             It 'Does not reload the EXO DLL' {

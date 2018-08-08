@@ -130,7 +130,54 @@ Describe SPMTools.Public.Import-ExoModule {
             Import-EXOModule
 
             #Tests
-            It 'Does not attempt to install the Module' {
+            It 'Attempts to install the Module' {
+                Assert-MockCalled Install-ExoModule -Exactly -Times 1
+            }
+        }
+
+        Context 'No Applications are installed' {
+
+            #Mocks
+            $Param = @{
+                CommandName = 'Get-ChildItem'
+                ParameterFilter = {
+                    $Path -eq 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall'
+                }
+                MockWith = { Throw }
+            }
+            Mock @Param #Get Child Item for Reg
+            $Param = @{
+                CommandName = 'Get-ChildItem'
+                ParameterFilter = {
+                    $Path -eq "$($env:LOCALAPPDATA)\Apps\2.0\" -and
+                    $Filter -eq 'Microsoft.Exchange.Management.ExoPowershellModule.dll' -and
+                    $Recurse -eq $true
+                }
+                MockWith = {
+                    return @(
+                        [pscustomobject]@{
+                            #With None
+                            FullName = 'C:\Users\user\AppData\Local\Apps\2.0\8CQCDPNB.DVH\6OKQMOY5.HX7\micr..dule_31bf3856ad364e35_0010.0000_none_e092d310eab729ab\Microsoft.Exchange.Management.ExoPowershellModule.dll'
+                        }
+                        [pscustomobject]@{
+                            #Without None
+                            FullName = 'C:\Users\user\AppData\Local\Apps\2.0\8CQCDPNB.DVH\6OKQMOY5.HX7\micr..tion_a8eee8aa09b0c4a7_0010.0000_46a3c36b19dd5128\Microsoft.Exchange.Management.ExoPowershellModule.dll'
+                        }
+                    )
+                }
+            }
+            Mock @Param #Get Child Item for FilePath
+            Mock Install-ExoModule {}
+            Mock Import-Module {}
+
+            #Run Statement
+            
+
+            #Tests
+            It 'Catchs the error' {
+                { Import-EXOModule } | Should Not Throw
+            }
+            It 'Attempts to install the Module' {
                 Assert-MockCalled Install-ExoModule -Exactly -Times 1
             }
         }
