@@ -105,7 +105,7 @@ Function Format-Sorted {
             Mandatory=$false,
             Position=1
         )]
-        [Object[]]$Property='Name',
+        [Object[]]$Property=$null,
 
         [Parameter(Mandatory=$false)]
         [switch]$AutoSize=$false,
