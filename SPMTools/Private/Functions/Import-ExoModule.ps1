@@ -4,11 +4,20 @@ function Import-EXOModule {
 
     #Check if module is installed
     $ApplicationName = "Microsoft Exchange Online Powershell Module"
-    $ApplicationKeys = Get-ChildItem HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall
-    
-    $IsInstalled = $ApplicationKeys | Where-Object {
-        $_.DisplayName -match $ApplicationName 
-    } | Select-Object -First 1
+    Try {
+        $Param = @{
+            Path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall'
+            ErrorAction = 'Stop'
+        }
+        $ApplicationKeys = Get-ChildItem @Param
+
+        $IsInstalled = $ApplicationKeys | Where-Object {
+            $_.DisplayName -match $ApplicationName 
+        } | Select-Object -First 1
+    }
+    Catch {
+        Write-Verbose "No Applications Installed for this user"
+    }
 
     #If not, install it
     if(!$IsInstalled) {
