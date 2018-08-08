@@ -24,7 +24,10 @@ function Connect-ExchangeOnline {
 	[cmdletbinding()]
     Param(
         [Parameter(DontShow,Mandatory=$false)]
-        [switch]$ReturnSession
+        [switch]$ReturnSession,
+
+        [Parameter(DontShow,Mandatory=$false)]
+        [switch]$TestMode
     )
     DynamicParam {
         $ParameterName = 'Company'
@@ -145,7 +148,7 @@ function Connect-ExchangeOnline {
                     DisableNameChecking = $true
                 }
                 $Session = Import-PSSession @Param
-                if($CompanyObj.O365.Mfa) {
+                if($CompanyObj.O365.Mfa -and !$TestMode) {
                     #Expose Implicit Remoting Reconnection logic
                     & $Session $script:MFAImplicitRemotingHandler
                 }
