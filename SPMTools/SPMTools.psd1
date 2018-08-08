@@ -41,7 +41,7 @@ To Get started, add a new Company with New-Company and then set the required inf
         }
     )
     HelpInfoURI = 'https://github.com/AbelFox/SPMTools/blob/master/README.md'
-    ModuleVersion = '0.8.1'
+    ModuleVersion = '1.0.0'
     PrivateData = @{
         PSData = @{
             Tags = @(
@@ -50,8 +50,14 @@ To Get started, add a new Company with New-Company and then set the required inf
             )
             ProjectUri = 'https://github.com/AbelFox/SPMTools'
             LicenseUri = 'https://github.com/AbelFox/SPMTools/blob/master/LICENSE'
-            IsPrerelease = $true
+            IsPrerelease = $false
             ReleaseNotes = @'
+    ## 1.0.0
+    * Initial Release
+    * Fixed issues with reconnection ExchangeOnline sessions using MFA
+    * Fixed Error message when Connecting to ExchangeOnline for the first time.
+    * Implemented more functionality from Sort-Object and Format-Table into Format-Sorted
+
     ## 0.8.1
     * Fixed issue with EXOModule installation
     * Fixed MFA cmdlets so URI can be modified
