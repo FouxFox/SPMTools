@@ -22,7 +22,10 @@ Connect-ExchangeOnline -Company ExampleServices
 
 function Connect-ExchangeOnline {
 	[cmdletbinding()]
-    Param()
+    Param(
+        [Parameter(DontShow,Mandatory=$false)]
+        [switch]$ReturnSession
+    )
     DynamicParam {
         $ParameterName = 'Company'
         $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
@@ -85,6 +88,8 @@ function Connect-ExchangeOnline {
                     Throw "Exchange MFA Module could not be imported."
                 }
             }
+
+            $global:ExoCompany = $Company #Store this for Implicit Remoting Handler
             
             $Tries = 0
             While (!$EXOSession -and $Tries -lt 3) {
@@ -128,14 +133,24 @@ function Connect-ExchangeOnline {
 	        }
             $EXOSession = New-PSSession @Param
         }
-        
+
         if($EXOSession) {
-            $Param = @{
-                Session = $EXOSession
-                AllowClobber = $true
-                DisableNameChecking = $true
+            if($ReturnSession) {
+                $EXOSession
             }
-            $null = Import-Module (Import-PSSession @Param) -Scope Global -DisableNameChecking
+            else {
+                $Param = @{
+                    Session = $EXOSession
+                    AllowClobber = $true
+                    DisableNameChecking = $true
+                }
+                $Session = Import-PSSession @Param
+                if($CompanyObj.O365.Mfa) {
+                    #Expose Implicit Remoting Reconnection logic
+                    & $Session $script:MFAImplicitRemotingHandler
+                }
+                Import-Module $Session -Scope Global -DisableNameChecking
+            }
         }
     }
 }
