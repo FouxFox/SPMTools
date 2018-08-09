@@ -72,6 +72,14 @@ The SharePointOnline cmdlet uses a best effort approach to guess the tenant URL.
 use this parameter to specify the URL. It should look like:
 https://{Tenant}-admin.sharepoint.com
 
+.PARAMETER OnlineDirSyncHost
+The FQDN of the machine running the AzureADConnect service.
+
+.PARAMETER OnlineDirSyncScript
+An Optional script to execute against the DirSync Host.
+
+This defualts to { Start-ADSyncSyncCycle -PolicyType Delta }
+
 .PARAMETER OnlineCredential
 A PSCredential Object containing the credentials for this company's online services.
 If not spcified, implicit credentials will be used.
@@ -226,12 +234,6 @@ Function Set-Company {
             ParameterSetName='Online',
             Mandatory=$false
         )] 
-        [string]$OnlineDirSyncDC,
-
-        [Parameter(
-            ParameterSetName='Online',
-            Mandatory=$false
-        )] 
         [scriptblock]$OnlineDirSyncScript,
 
         [Parameter(
@@ -252,12 +254,6 @@ Function Set-Company {
             Mandatory=$false
         )] 
         [string]$OnlineRemoteRoutingSuffix,
-
-        [Parameter(
-            ParameterSetName='Online',
-            Mandatory=$false
-        )] 
-        [string]$OnlineDirSyncHost,
 
         [Parameter(
             ParameterSetName='Online',
@@ -467,15 +463,12 @@ Function Set-Company {
                 $CompanyObj.O365.DirSync.Host = $OnlineDirSyncHost
             }
 
-            if(($OnlineDirSyncDC -or $OnlineDirSyncScript) -and $CompanyObj.O365.DirSync) {
-                if($OnlineDirSyncDC) {
-                    $CompanyObj.O365.DirSync.DC = $OnlineDirSyncDC
-                }
+            if($OnlineDirSyncScript -and $CompanyObj.O365.DirSync) {
                 if($OnlineDirSyncScript) {
                     $CompanyObj.O365.DirSync.Command = $OnlineDirSyncScript
                 }
             }
-            elseif ($OnlineDirSyncDC -or $OnlineDirSyncScript) {
+            elseif ($OnlineDirSyncScript) {
                 $message = "No DirSync Host specified or in configuration."
                 $Param = @{
                     ExceptionName = "System.ArgumentException"
