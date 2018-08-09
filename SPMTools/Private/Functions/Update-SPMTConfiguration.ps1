@@ -1,6 +1,6 @@
 #Upgrades the configuration file with new schema changes
-## CURRENT SCHEMA VERSION: 1
-#Don't forget to update Schema Version in Get-SPMTSchemaVersion
+## CURRENT SCHEMA VERSION: 3
+#Don't forget to update Schema Version in Get-SPMTSchemaVersion, Set-Company, and the Reference Object
 
 function Update-SPMTConfiguration {
     [cmdletBinding()]
@@ -29,6 +29,24 @@ function Update-SPMTConfiguration {
         $Script:Config.SchemaVersion = 2
     }
     if($Script:Config.SchemaVersion -eq 2) {
+        ForEach ($CompanyName in $Script:Config.Companies.Keys) {
+            if($Script:Config.Companies.$CompanyName.O365) {
+                $O365Obj = $Script:Config.Companies.$CompanyName.O365
+                if(!$O365Obj.ContainsKey('DirSync')) {
+                    $O365Obj.Add('DirSync',$false)
+                }
+                #Remove Old values
+                if(!$O365Obj.ContainsKey('DirSyncHost')) {
+                    $O365Obj.Remove('DirSyncHost')
+                }
+                if(!$O365Obj.ContainsKey('DirSyncDC')) {
+                    $O365Obj.Remove('DirSyncDC')
+                }
+            }
+        }
+        $Script:Config.SchemaVersion = 3
+    }
+    if($Script:Config.SchemaVersion -eq 3) {
         #Reserved for future updates
     }
 

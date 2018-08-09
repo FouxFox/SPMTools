@@ -19,6 +19,12 @@
                 SkypeOnlineUri = 'https://online.lync.com/OCSPowerShell'
                 SharePointUri = 'https://<Tenant>-admin.sharepoint.com/'
                 CredentialName = 'StoredCredentialName'
+                DirSync = $false -or @{
+                    Host = 'HostName'
+                    Command = { 
+                        #Sync Script Block Here 
+                    }
+                }
             }
         } 
     }

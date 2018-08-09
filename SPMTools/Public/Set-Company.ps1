@@ -218,6 +218,24 @@ Function Set-Company {
 
         [Parameter(
             ParameterSetName='Online',
+            Mandatory=$false
+        )] 
+        [string]$OnlineDirSyncHost,
+
+        [Parameter(
+            ParameterSetName='Online',
+            Mandatory=$false
+        )] 
+        [string]$OnlineDirSyncDC,
+
+        [Parameter(
+            ParameterSetName='Online',
+            Mandatory=$false
+        )] 
+        [scriptblock]$OnlineDirSyncScript,
+
+        [Parameter(
+            ParameterSetName='Online',
             Mandatory=$true
         )] 
         [pscredential]$OnlineCredential,
@@ -390,8 +408,7 @@ Function Set-Company {
                     CredentialName = $false
                     AzureUsageLocation = $false
                     RemoteRoutingSuffix = $false
-                    DirSyncHost = $false
-                    DirSyncDC = $false
+                    DirSync = $false
                 }
             }
 
@@ -438,6 +455,36 @@ Function Set-Company {
             }
             else {
                 $CompanyObj.O365.AzureADAuthorizationEndpointUri = 'https://login.windows.net/common'
+            }
+
+            if($OnlineDirSyncHost -and !$CompanyObj.O365.DirSync) {
+                #Create DirSync Record
+                $CompanyObj.O365.DirSync = @{
+                    Host = $false
+                    Command = { Start-ADSyncSyncCycle -PolicyType Delta }
+                }
+
+                $CompanyObj.O365.DirSync.Host = $OnlineDirSyncHost
+            }
+
+            if(($OnlineDirSyncDC -or $OnlineDirSyncScript) -and $CompanyObj.O365.DirSync) {
+                if($OnlineDirSyncDC) {
+                    $CompanyObj.O365.DirSync.DC = $OnlineDirSyncDC
+                }
+                if($OnlineDirSyncScript) {
+                    $CompanyObj.O365.DirSync.Command = $OnlineDirSyncScript
+                }
+            }
+            elseif ($OnlineDirSyncDC -or $OnlineDirSyncScript) {
+                $message = "No DirSync Host specified or in configuration."
+                $Param = @{
+                    ExceptionName = "System.ArgumentException"
+                    ExceptionMessage = $message
+                    ErrorId = "SetCompanyNoDirSyncHost" 
+                    CallerPSCmdlet = $PSCmdlet
+                    ErrorCategory = 'InvalidArgument'
+                }
+                ThrowError @Param
             }
 
             if($OnlineCredential) {
