@@ -66,9 +66,19 @@ function Invoke-DirSync {
 
         $CompanyObj = $Script:Config.Companies.$Company
 
+        $RemoteCommand = {
+            Param(
+                [Parameter()]
+                [string]$PolicyType
+            )
+            
+            Start-ADSyncSyncCycle -PolicyType $PolicyType
+        }
+
         $Param = @{
             ComputerName = $CompanyObj.O365.DirSync.Host
-            ScriptBlock = $CompanyObj.O365.DirSync.Command
+            ScriptBlock = $RemoteCommand
+            ArgumentList = $CompanyObj.O365.DirSync.PolciyType
         }
         Invoke-Command @Param
     }

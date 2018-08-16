@@ -234,11 +234,11 @@ Function Set-Company {
             ParameterSetName='Online',
             Mandatory=$false
         )] 
-        [scriptblock]$OnlineDirSyncScript,
+        [scriptblock]$OnlineDirSyncPolicyType,
 
         [Parameter(
             ParameterSetName='Online',
-            Mandatory=$true
+            Mandatory=$false
         )] 
         [pscredential]$OnlineCredential,
         
@@ -457,18 +457,18 @@ Function Set-Company {
                 #Create DirSync Record
                 $CompanyObj.O365.DirSync = @{
                     Host = $false
-                    Command = { Start-ADSyncSyncCycle -PolicyType Delta }
+                    PolciyType = "Delta"
                 }
 
                 $CompanyObj.O365.DirSync.Host = $OnlineDirSyncHost
             }
 
-            if($OnlineDirSyncScript -and $CompanyObj.O365.DirSync) {
-                if($OnlineDirSyncScript) {
-                    $CompanyObj.O365.DirSync.Command = $OnlineDirSyncScript
+            if($OnlineDirSyncPolicyType -and $CompanyObj.O365.DirSync) {
+                if($OnlineDirSyncPolicyType) {
+                    $CompanyObj.O365.DirSync.PolciyType = $OnlineDirSyncPolicyType
                 }
             }
-            elseif ($OnlineDirSyncScript) {
+            elseif ($OnlineDirSyncPolicyType) {
                 $message = "No DirSync Host specified or in configuration."
                 $Param = @{
                     ExceptionName = "System.ArgumentException"
