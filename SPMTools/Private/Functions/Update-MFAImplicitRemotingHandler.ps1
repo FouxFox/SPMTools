@@ -33,7 +33,7 @@ $script:MFAImplicitRemotingHandler = {
         ) {
             $Message = 'Creating a new session using MFA for implicit remoting of "{0}" command ...'
             Write-PSImplicitRemotingMessage ($Message -f $commandName)
-            $session = Connect-ExchangeOnline -Company $global:ExoCompany
+            $session = Connect-ExchangeOnline -Company $global:ExoCompany -ReturnSession
 
             if ($null -ne $session) {
                 Set-PSImplicitRemotingSession -CreatedByModule $true -PSSession $session
