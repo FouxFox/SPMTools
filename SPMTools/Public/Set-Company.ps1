@@ -234,7 +234,13 @@ Function Set-Company {
             ParameterSetName='Online',
             Mandatory=$false
         )] 
-        [scriptblock]$OnlineDirSyncPolicyType,
+        [string]$OnlineDirSyncConfigurationName,
+
+        [Parameter(
+            ParameterSetName='Online',
+            Mandatory=$false
+        )] 
+        [string]$OnlineDirSyncPolicyType,
 
         [Parameter(
             ParameterSetName='Online',
@@ -457,15 +463,23 @@ Function Set-Company {
                 #Create DirSync Record
                 $CompanyObj.O365.DirSync = @{
                     Host = $false
-                    PolciyType = "Delta"
+                    ConfigurationName = $false
+                    PolicyType = "Delta"
                 }
 
+                Write-Warning "In order to use Invoke-DirSync, the user context for this command must be able to create a remote Powershell session with the DirSync host and must be a member of \ADSyncOperators"
+            }
+            
+            if($OnlineDirSyncHost) {
                 $CompanyObj.O365.DirSync.Host = $OnlineDirSyncHost
             }
 
-            if($OnlineDirSyncPolicyType -and $CompanyObj.O365.DirSync) {
+            if(($OnlineDirSyncPolicyType -or $OnlineDirSyncConfigurationName) -and $CompanyObj.O365.DirSync) {
                 if($OnlineDirSyncPolicyType) {
-                    $CompanyObj.O365.DirSync.PolciyType = $OnlineDirSyncPolicyType
+                    $CompanyObj.O365.DirSync.PolicyType = $OnlineDirSyncPolicyType
+                }
+                if($OnlineDirSyncConfigurationName) {
+                    $CompanyObj.O365.DirSync.ConfigurationName = $OnlineDirSyncConfigurationName
                 }
             }
             elseif ($OnlineDirSyncPolicyType) {

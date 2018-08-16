@@ -21,9 +21,8 @@
                 CredentialName = 'StoredCredentialName'
                 DirSync = $false -or @{
                     Host = 'HostName'
-                    Command = { 
-                        #Sync Script Block Here 
-                    }
+                    ConfigurationName = $false -or 'Optional Session ConfigurationName'
+                    PolicyType = 'Delta'
                 }
             }
         } 
