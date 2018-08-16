@@ -1,9 +1,21 @@
 Function Read-SPMTConfiguration {
     [cmdletBinding()] 
-    Param()
+    Param(
+        [Parameter(Mandatory=$false)]
+        [string]$ConfigFilePath=$Script:ConfigLocation
+    )
+    
+    $Obj = Get-Content -Path $ConfigFilePath | ConvertFrom-Json
+    $ParsedConfig = $obj | ConvertTo-HashTable
 
-    $Obj = Get-Content -Path $Script:ConfigLocation | ConvertFrom-Json
-    $script:Config = $obj | ConvertTo-HashTable
+
+    if($ParsedConfig) {
+        $script:Config = $ParsedConfig
+        Write-SPMTConfiguration -ConfigFilePath $Script:BackupConfigLocation
+        Write-Verbose "Writing copy to $Script:BackupConfigLocation"
+    }
+
+    
 
     <#
         For Testing:
