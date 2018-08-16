@@ -5,7 +5,7 @@
     Author = 'Matt Small'
     Copyright = '(c) Matt Small. All rights reserved.'
     Description = @'
-The Service Provider Management Tools module provides engineers with the ability to store connection information and use it quickly, eliminating the need to constantly retype passwords or maintain the same password across all companies serviced by the engineer to simplify the logon process.
+The Service Provider Management Tools module works as a connection manager for store and using connection information for multiple organizations, eliminating the need to constantly retype passwords or maintain the same password across all companies serviced by the engineer to simplify the logon process.
 
 Also packaged are helper cmdlets such as Format-Sorted to simplify '| sort Name | ft Name' to '| fs' and Get-TranslatedSID for quickly getting the NTAccount from a Security Identifier.
 
@@ -24,6 +24,7 @@ To Get started, add a new Company with New-Company and then set the required inf
         'Get-Company'
         'Get-DellExpressServiceCode'
         'Get-TranslatedSID'
+        'Invoke-DirSync'
         'Mount-ADDrive'
         'New-Company'
         'Remove-Company'
@@ -41,7 +42,7 @@ To Get started, add a new Company with New-Company and then set the required inf
         }
     )
     HelpInfoURI = 'https://github.com/AbelFox/SPMTools/blob/master/README.md'
-    ModuleVersion = '1.0.0'
+    ModuleVersion = '1.1.0'
     PrivateData = @{
         PSData = @{
             Tags = @(
@@ -52,6 +53,12 @@ To Get started, add a new Company with New-Company and then set the required inf
             LicenseUri = 'https://github.com/AbelFox/SPMTools/blob/master/LICENSE'
             IsPrerelease = $false
             ReleaseNotes = @'
+    ## 1.1.0
+    * Further improvements to ExchangeOnline MFA reconnection logic
+    * Reformatted messages when Active Directory is unavailable when using Mount-ADDrive
+    * Improved loading of configuration files in the event of corruption
+    * Added Invoke-DirSync command
+    
     ## 1.0.0
     * Initial Release
     * Fixed issues with reconnection ExchangeOnline sessions using MFA
