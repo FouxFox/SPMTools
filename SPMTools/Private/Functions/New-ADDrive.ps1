@@ -59,6 +59,7 @@ Function New-ADDrive {
                 PSProvider = 'ActiveDirectory'
                 Root = ''
                 Scope = 'Global'
+                ErrorAction = 'Stop'
             }
             
             if($DomainObj.PreferedDomainController) {
@@ -77,7 +78,12 @@ Function New-ADDrive {
             }		
             
             Write-Debug "[New-ADDrive] Calling New-PSDrive"
-            New-PSDrive @Param
+            Try {
+                New-PSDrive @Param
+            }
+            Catch [Microsoft.ActiveDirectory.Management.ADServerDownException] {
+                Write-Warning -Message "Could not contact $($Param.Server). $($Param.Name) will not be mounted."
+            }
         }
         else {
             $message = "The drive '$($DomainObj.PSDriveLetter)' exists. Please unmount it before calling '$($PSCmdlet.MyInvocation.InvocationName)' again"
