@@ -266,27 +266,46 @@ Describe SPMTools.Public.Update-SPMTConfiguration {
 
         Mock Write-SPMTConfiguration {}
 
+        #For testing upgrade script
+        function Compare-Configurations {
+            param($ExpectedConfig,$ActualConfig)
+
+            $ActualConfig.Keys | ForEach-Object {
+                $Key = $_
+                $ActualValue = $ActualConfig[$_]
+                if($ExpectedConfig.ContainsKey($Key)) {
+                    $ExpectedValue = $ExpectedConfig[$_]
+                    if($ActualValue.GetType().Name -eq 'Hashtable') {
+                        if($ExpectedValue.GetType().Name -eq 'Hashtable') {
+                            Compare-Configurations $ExpectedValue $ActualValue
+                        }
+                        else {
+                            "$($Key): <Hashtable>" | Should be "$($key): $ExpectedValue"
+                        }
+                    }
+                    else {
+                        if($ExpectedValue.GetType().Name -eq 'Hashtable') {
+                            "$($key): $ActualValue" | Should be "$($Key): <Hashtable>"
+                        }
+                        else {
+                            "$($key): $ActualValue" | Should be "$($Key): $ExpectedValue"
+                        }
+                    }
+                }
+                else {
+                    $key | Should bein $ExpectedConfig.Keys
+                }
+            }
+        }
+
         ForEach ($Case in $TestCases.Keys) {
             It "Case $($Case): $($TestCases[$Case].Description)" {             
                 $Script:Config = $TestCases[$Case].Before
-                $ExpectedJson = ($TestCases[$Case].After | ConvertTo-Json -Depth 10).Split("`n")
+                $ExpectedConfig = $TestCases[$Case].After
                 Update-SPMTConfiguration
-                $ActualJson = ($Script:Config | ConvertTo-Json -Depth 10).Split("`n")
-                $lineNo = 0
+                $ActualConfig = $Script:Config
 
-                While ($lineNo -lt $ExpectedJson.Count -or $lineNo -lt $ActualJson.Count) {
-                    $ExpectedLine = ''
-                    $ActualLine = ''
-                    if($lineNo -lt $ExpectedJson.Count) {
-                        $ExpectedLine = $ExpectedJson[$lineNo].Trim().Replace('"','').Trim(',')
-                    }
-                    if($lineNo -lt $ActualJson.Count) {
-                        $ActualLine = $ActualJson[$lineNo].Trim().Replace('"','').Trim(',')
-                    }
-                    
-                    $ActualLine | Should be $ExpectedLine
-                    $lineNo++
-                }
+                Compare-Configurations $ExpectedConfig $ActualConfig
             }
         }
         It 'Calls Write-SPMTConfiguration after each change' {
