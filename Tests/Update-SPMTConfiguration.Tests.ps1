@@ -11,29 +11,50 @@ Import-Module $Script:ModulePath
 #Test Suite
 Describe SPMTools.Public.Update-SPMTConfiguration {
     InModuleScope SPMTools {
-        $ExpectedObject = @{
+        #Master Variables
+        $TargetSchemaVersion = 3
+        #No Change Object
+        $TargetObject = @{
             Companies = @{
                 TestCompany = @{
                     O365 = @{
-
+                        Mfa = $true
+                        SharePointOnlineUri = $false
+                        ComplianceCenterUri = $false
+                        AzureADAuthorizationEndpointUri = $false
+                        DirSync = $false
                     }
                 }
             }
-            SchemaVersion = 1
+            SchemaVersion = $TargetSchemaVersion
         }
+
         $TestCases = [ordered]@{
             #Test Case
             0 = @{
-                Description = 'Upgrades from version 0 (No Office365)'
-                Before = @{
-                    Companies = @{}
-                }
-                After = @{
-                    Companies = @{}
-                    SchemaVersion = 2
-                }
+                Description = "Makes no changes to version $TargetSchemaVersion"
+                Before = $TargetObject
+                After = $TargetObject
             }
             1 = @{
+                Description = 'Upgrades from version 0 (No Office365)'
+                Before = @{
+                    Companies = @{
+                        TestCompany = @{
+                            O365 = $false
+                        }
+                    }
+                }
+                After = @{
+                    Companies = @{
+                        TestCompany = @{
+                            O365 = $false
+                        }
+                    }
+                    SchemaVersion = $TargetSchemaVersion
+                }
+            }
+            2 = @{
                 Description = 'Upgrades from version 0 (Office365, No Sharepoint)'
                 Before = @{
                     Companies = @{
@@ -52,13 +73,14 @@ Describe SPMTools.Public.Update-SPMTConfiguration {
                                 SharePointOnlineUri = $false
                                 ComplianceCenterUri = 'https://ps.compliance.protection.outlook.com/powershell-liveid/'
                                 AzureADAuthorizationEndpointUri = 'https://login.windows.net/common'
+                                DirSync = $false
                             }
                         }
                     }
-                    SchemaVersion = 2
+                    SchemaVersion = $TargetSchemaVersion
                 }
             }
-            2 = @{
+            3 = @{
                 Description = 'Upgrades from version 0 (Office365, Sharepoint)'
                 Before = @{
                     Companies = @{
@@ -78,24 +100,33 @@ Describe SPMTools.Public.Update-SPMTConfiguration {
                                 SharePointOnlineUri = 'Test'
                                 ComplianceCenterUri = 'https://ps.compliance.protection.outlook.com/powershell-liveid/'
                                 AzureADAuthorizationEndpointUri = 'https://login.windows.net/common'
+                                DirSync = $false
                             }
                         }
                     }
-                    SchemaVersion = 2
-                }
-            }
-            3 = @{
-                Description = 'Upgrades from version 1 (No Office365)'
-                Before = @{
-                    Companies = @{}
-                    SchemaVersion = 1
-                }
-                After = @{
-                    Companies = @{}
-                    SchemaVersion = 2
+                    SchemaVersion = $TargetSchemaVersion
                 }
             }
             4 = @{
+                Description = 'Upgrades from version 1 (No Office365)'
+                Before = @{
+                    Companies = @{
+                        TestCompany = @{
+                            O365 = $false
+                        }
+                    }
+                    SchemaVersion = 1
+                }
+                After = @{
+                    Companies = @{
+                        TestCompany = @{
+                            O365 = $false
+                        }
+                    }
+                    SchemaVersion = $TargetSchemaVersion
+                }
+            }
+            5 = @{
                 Description = 'Upgrades from version 1 (Office365)'
                 Before = @{
                     Companies = @{
@@ -115,13 +146,14 @@ Describe SPMTools.Public.Update-SPMTConfiguration {
                                 SharePointOnlineUri = $false
                                 ComplianceCenterUri = 'https://ps.compliance.protection.outlook.com/powershell-liveid/'
                                 AzureADAuthorizationEndpointUri = 'https://login.windows.net/common'
+                                DirSync = $false
                             }
                         }
                     }
-                    SchemaVersion = 2
+                    SchemaVersion = $TargetSchemaVersion
                 }
             }
-            5 = @{
+            6 = @{
                 Description = 'Upgrades from version 1 (Office365, Sharepoint)'
                 Before = @{
                     Companies = @{
@@ -142,22 +174,42 @@ Describe SPMTools.Public.Update-SPMTConfiguration {
                                 SharePointOnlineUri = 'Test'
                                 ComplianceCenterUri = 'https://ps.compliance.protection.outlook.com/powershell-liveid/'
                                 AzureADAuthorizationEndpointUri = 'https://login.windows.net/common'
+                                DirSync = $false
                             }
+                        }
+                    }
+                    SchemaVersion = $TargetSchemaVersion
+                }
+            }
+            7 = @{
+                Description = 'Upgrades from version 2 (No Office365)'
+                Before = @{
+                    Companies = @{
+                        TestCompany = @{
+                            O365 = $false
                         }
                     }
                     SchemaVersion = 2
                 }
+                After = @{
+                    Companies = @{
+                        TestCompany = @{
+                            O365 = $false
+                        }
+                    }
+                    SchemaVersion = $TargetSchemaVersion
+                }
             }
-            6 = @{
-                Description = 'Makes no changes to version 2'
+            8 = @{
+                Description = 'Upgrades from version 2 (Office365, No DisSync)'
                 Before = @{
                     Companies = @{
                         TestCompany = @{
                             O365 = @{
                                 Mfa = $true
-                                SharePointOnlineUri = $false
-                                ComplianceCenterUri = $false
-                                AzureADAuthorizationEndpointUri = $false
+                                SharePointOnlineUri = 'Test'
+                                ComplianceCenterUri = 'https://ps.compliance.protection.outlook.com/powershell-liveid/'
+                                AzureADAuthorizationEndpointUri = 'https://login.windows.net/common'
                             }
                         }
                     }
@@ -168,13 +220,46 @@ Describe SPMTools.Public.Update-SPMTConfiguration {
                         TestCompany = @{
                             O365 = @{
                                 Mfa = $true
-                                SharePointOnlineUri = $false
-                                ComplianceCenterUri = $false
-                                AzureADAuthorizationEndpointUri = $false
+                                SharePointOnlineUri = 'Test'
+                                ComplianceCenterUri = 'https://ps.compliance.protection.outlook.com/powershell-liveid/'
+                                AzureADAuthorizationEndpointUri = 'https://login.windows.net/common'
+                                DirSync = $false
+                            }
+                        }
+                    }
+                    SchemaVersion = $TargetSchemaVersion
+                }
+            }
+            9 = @{
+                Description = 'Upgrades from version 2 (Office365, Old DisSync)'
+                Before = @{
+                    Companies = @{
+                        TestCompany = @{
+                            O365 = @{
+                                Mfa = $true
+                                SharePointOnlineUri = 'Test'
+                                ComplianceCenterUri = 'https://ps.compliance.protection.outlook.com/powershell-liveid/'
+                                AzureADAuthorizationEndpointUri = 'https://login.windows.net/common'
+                                DirSyncHost = ''
+                                DirSyncDC = ''
                             }
                         }
                     }
                     SchemaVersion = 2
+                }
+                After = @{
+                    Companies = @{
+                        TestCompany = @{
+                            O365 = @{
+                                Mfa = $true
+                                SharePointOnlineUri = 'Test'
+                                ComplianceCenterUri = 'https://ps.compliance.protection.outlook.com/powershell-liveid/'
+                                AzureADAuthorizationEndpointUri = 'https://login.windows.net/common'
+                                DirSync = $false
+                            }
+                        }
+                    }
+                    SchemaVersion = $TargetSchemaVersion
                 }
             }
         }
@@ -182,20 +267,21 @@ Describe SPMTools.Public.Update-SPMTConfiguration {
         Mock Write-SPMTConfiguration {}
 
         ForEach ($Case in $TestCases.Keys) {
-            It "Case $($Case): $($TestCases[$Case].Description)" {
+            It "Case $($Case): $($TestCases[$Case].Description)" {             
                 $Script:Config = $TestCases[$Case].Before
-                $ExpectedJson = ($TestCases[$Case].After | ConvertTo-JsonEx -Depth 10).Split("`n")
+                $ExpectedJson = ($TestCases[$Case].After | ConvertTo-Json -Depth 10).Split("`n")
                 Update-SPMTConfiguration
-                $ActualJson = ($Script:Config | ConvertTo-JsonEx -Depth 10).Split("`n")
+                $ActualJson = ($Script:Config | ConvertTo-Json -Depth 10).Split("`n")
                 $lineNo = 0
+
                 While ($lineNo -lt $ExpectedJson.Count -or $lineNo -lt $ActualJson.Count) {
                     $ExpectedLine = ''
                     $ActualLine = ''
                     if($lineNo -lt $ExpectedJson.Count) {
-                        $ExpectedLine = $ExpectedJson[$lineNo].Trim().Replace('"','')
+                        $ExpectedLine = $ExpectedJson[$lineNo].Trim().Replace('"','').Trim(',')
                     }
                     if($lineNo -lt $ActualJson.Count) {
-                        $ActualLine = $ActualJson[$lineNo].Trim().Replace('"','')
+                        $ActualLine = $ActualJson[$lineNo].Trim().Replace('"','').Trim(',')
                     }
                     
                     $ActualLine | Should be $ExpectedLine

@@ -121,7 +121,7 @@ Credentials are stored securely in the Windows Credential Vault.
 #>
 
 Function Set-Company {
-    [cmdletBinding()] 
+    [cmdletBinding(DefaultParameterSetName='All')] 
     Param(
         # AD Set
 	    [Parameter(
