@@ -36,10 +36,10 @@ function Update-SPMTConfiguration {
                     $O365Obj.Add('DirSync',$false)
                 }
                 #Remove Old values
-                if(!$O365Obj.ContainsKey('DirSyncHost')) {
+                if($O365Obj.ContainsKey('DirSyncHost')) {
                     $O365Obj.Remove('DirSyncHost')
                 }
-                if(!$O365Obj.ContainsKey('DirSyncDC')) {
+                if($O365Obj.ContainsKey('DirSyncDC')) {
                     $O365Obj.Remove('DirSyncDC')
                 }
             }
