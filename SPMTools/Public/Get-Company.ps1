@@ -163,6 +163,12 @@ Function Get-Company {
                 else {
                     $Output.Add('O365AuthType','Integrated')
                 }
+
+                if($O365Obj.DirSync) {
+                    $Output.Add('DirSyncHost',$O365Obj.DirSync.Host)
+                    $Output.Add('DirSyncConfigurationName',$O365Obj.DirSync.ConfigurationName)
+                    $Output.Add('DirSyncPolicyType',$O365Obj.DirSync.PolicyType)
+                }
             }
 
             [pscustomobject]$Output

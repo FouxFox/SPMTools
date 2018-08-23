@@ -42,7 +42,7 @@ To Get started, add a new Company with New-Company and then set the required inf
         }
     )
     HelpInfoURI = 'https://github.com/AbelFox/SPMTools/blob/master/README.md'
-    ModuleVersion = '1.1.0'
+    ModuleVersion = '1.1.1'
     PrivateData = @{
         PSData = @{
             Tags = @(
@@ -53,6 +53,9 @@ To Get started, add a new Company with New-Company and then set the required inf
             LicenseUri = 'https://github.com/AbelFox/SPMTools/blob/master/LICENSE'
             IsPrerelease = $false
             ReleaseNotes = @'
+    ## 1.1.1
+    * Fixed bug where DirSync configuration would not display in Get-Company
+
     ## 1.1.0
     * Further improvements to ExchangeOnline MFA reconnection logic
     * Reformatted messages when Active Directory is unavailable when using Mount-ADDrive
